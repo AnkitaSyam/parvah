@@ -1,0 +1,23 @@
+{
+  "name": "parvah",
+  "version": "1.0.0",
+  "description": "Maternal health AI platform for rural India ASHA worker network",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev:backend": "node --watch backend/server.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": [
+    "maternal-health",
+    "asha",
+    "rural-health",
+    "supabase",
+    "groq",
+    "twilio",
+    "ai"
+  ],
+  "author": "Parvah Team",
+  "license": "MIT"
+}

@@ -1,0 +1,1 @@
+This is a corrupted mock audio file containing plain text instead of real audio data. It should trigger an invalid file format error.

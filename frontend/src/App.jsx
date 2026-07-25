@@ -8,6 +8,7 @@ import MythDebunker from './components/MythDebunker';
 import MythCatalog from './components/MythCatalog';
 import AuthModal from './components/AuthModal';
 import SmsModal from './components/SmsModal';
+import UploadTest from './pages/UploadTest';
 import { supabase } from './lib/supabase';
 import { api } from './lib/api';
 
@@ -167,6 +168,10 @@ export default function App() {
 
         {activeTab === 'myths' && (
           <MythCatalog />
+        )}
+
+        {activeTab === 'pipeline' && (
+          <UploadTest />
         )}
       </main>
 

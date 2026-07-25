@@ -3,7 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
-
+import { supabase } from './config/supabase.js';
+import { groq } from './config/groq.js';
+import callsRouter from './routes/calls.js';
 import patientRoutes from './routes/patientRoutes.js';
 import visitRoutes from './routes/visitRoutes.js';
 import mythRoutes from './routes/mythRoutes.js';
@@ -14,25 +16,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Body Parsers
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Static directory for uploaded audio files
 const uploadsPath = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
 }
 app.use('/uploads', express.static(uploadsPath));
 
-// Health Check Endpoint
+// Health route
+app.get('/health', (req, res) => {
+  return res.json({ status: 'ok' });
+});
+
 app.get('/api/health', (req, res) => {
   return res.json({
     status: 'healthy',
@@ -46,13 +48,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Mount Routes
+// Mount routes
+app.use('/api/calls', callsRouter);
 app.use('/api/patients', patientRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/myths', mythRoutes);
 app.use('/api/sms', smsRoutes);
 
-// Global Error Handler
 app.use((err, req, res, next) => {
   console.error('Unhandled Backend Exception:', err.stack);
   res.status(500).json({
@@ -61,7 +63,10 @@ app.use((err, req, res, next) => {
   });
 });
 
+// App listener
 app.listen(PORT, () => {
-  console.log(`🚀 Parvah Maternal Health API Server running on port ${PORT}`);
-  console.log(`📡 Health Check URL: http://localhost:${PORT}/api/health`);
+  console.log(`🚀 Parvah Server listening on http://localhost:${PORT}`);
+  console.log(`📡 GET /health -> http://localhost:${PORT}/health`);
 });
+
+export default app;

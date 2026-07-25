@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS public.patients (
     contact_phone TEXT,
     emergency_contact TEXT,
     blood_group TEXT,
+    preferred_language TEXT DEFAULT 'en' CHECK (preferred_language IN ('en', 'hi', 'ml')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

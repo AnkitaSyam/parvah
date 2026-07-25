@@ -6,16 +6,9 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/uploads': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      }
+      '/health': 'http://localhost:5000',
+      '/api': 'http://localhost:5000',
+      '/uploads': 'http://localhost:5000'
     }
   }
 });

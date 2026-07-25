@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeartPulse, Users, Mic, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react';
+import { HeartPulse, Users, Mic, BookOpen, AudioLines, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLogout }) {
   return (
@@ -64,6 +64,15 @@ export default function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLo
           >
             <BookOpen size={16} />
             <span>Myth DB</span>
+          </button>
+
+          <button
+            className={`btn ${activeTab === 'pipeline' ? 'btn-primary' : 'btn-outline'}`}
+            onClick={() => setActiveTab('pipeline')}
+            style={{ fontSize: '0.85rem', padding: '0.5rem 0.9rem' }}
+          >
+            <AudioLines size={16} />
+            <span>Audio Pipeline Test</span>
           </button>
         </nav>
 

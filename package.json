@@ -2,10 +2,10 @@
   "name": "parvah",
   "version": "1.0.0",
   "description": "Maternal health AI platform for rural India ASHA worker network",
-  "main": "backend/server.js",
+  "main": "backend/index.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev:backend": "node --watch backend/server.js",
+    "start": "node backend/index.js",
+    "dev:backend": "node --watch backend/index.js",
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
   },

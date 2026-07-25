@@ -1,15 +1,16 @@
 {
   "name": "parvah-backend",
   "version": "1.0.0",
-  "description": "Parvah Express Backend with Groq, Supabase & Twilio",
-  "main": "server.js",
+  "description": "Parvah Maternal Health Express Backend",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "seed": "node scripts/seed.js",
+    "test:rls": "node scripts/testRls.js"
   },
   "dependencies": {
-    "@supabase/server": "^1.4.0",
     "@supabase/supabase-js": "^2.45.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

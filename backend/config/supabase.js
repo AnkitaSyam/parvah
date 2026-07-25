@@ -10,9 +10,8 @@ if (!supabaseUrl || !supabaseServiceKey) {
   console.warn('⚠️ Supabase URL or Secret/Service Role Key missing in environment variables.');
 }
 
-// Backend client initialized with Service Role / Secret Key for administrative tasks
-// RLS checks & user context verification are handled explicitly in route handlers.
-export const supabaseAdmin = createClient(
+// Server Supabase client / admin client (bypasses RLS for service tasks)
+export const supabase = createClient(
   supabaseUrl,
   supabaseServiceKey || 'placeholder-service-key',
   {
@@ -22,6 +21,8 @@ export const supabaseAdmin = createClient(
     },
   }
 );
+
+export const supabaseAdmin = supabase; // Export as both for compatibility
 
 /**
  * Creates an authenticated Supabase client using a user's JWT token

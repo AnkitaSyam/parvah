@@ -1,0 +1,114 @@
+[
+  {
+    "id": "myth_papaya",
+    "myth": "Eating papaya during pregnancy causes miscarriage or harms the baby.",
+    "fact": "Ripe papaya is safe and nutritious in pregnancy. Only unripe or semi-ripe papaya, which contains high levels of latex and papain, is advised against because it may trigger uterine contractions. Ripe papaya does not carry this risk.",
+    "source": "ICMR-National Institute of Nutrition, Dietary Guidelines for Indians",
+    "sourceUrl": "https://www.nin.res.in/downloads/DietaryGuidelinesforNINwebsite.pdf"
+  },
+  {
+    "id": "myth_hot_cold_food",
+    "myth": "Certain foods are 'hot' and must be avoided or the baby will be harmed, while 'cold' foods must be eaten to balance the body.",
+    "fact": "There is no medical evidence for 'hot' and 'cold' food classifications affecting pregnancy outcomes. What matters is a balanced diet with adequate protein, iron, folic acid, and calcium.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016), Nutritional Interventions",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "myth_colostrum_discard",
+    "myth": "The first thick yellowish breast milk (colostrum) is dirty or harmful and should be discarded before breastfeeding.",
+    "fact": "Colostrum is highly nutritious and contains antibodies that protect the newborn from infections. It should be fed to the baby within the first hour of birth, not discarded.",
+    "source": "WHO/UNICEF Baby-Friendly Hospital Initiative, Implementation Guidance",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241513807"
+  },
+  {
+    "id": "myth_eclipse",
+    "myth": "Going outside or eating during a solar or lunar eclipse while pregnant will cause birth defects or harm the baby.",
+    "fact": "There is no scientific link between eclipses and pregnancy outcomes or birth defects. Normal daily activities during an eclipse do not pose any risk to the pregnancy.",
+    "source": "ICMR maternal health public awareness advisory",
+    "sourceUrl": "https://main.icmr.nic.in/"
+  },
+  {
+    "id": "myth_less_food",
+    "myth": "A pregnant woman should eat less food than usual so the baby doesn't grow too large and delivery isn't difficult.",
+    "fact": "Restricting food intake during pregnancy can cause maternal malnutrition and low birth weight in the baby. Pregnant women need increased calorie and nutrient intake, not less.",
+    "source": "ICMR-National Institute of Nutrition, Dietary Guidelines for Indians",
+    "sourceUrl": "https://www.nin.res.in/downloads/DietaryGuidelinesforNINwebsite.pdf"
+  },
+  {
+    "id": "myth_no_exercise",
+    "myth": "Pregnant women should avoid all physical activity and stay in bed as much as possible.",
+    "fact": "Moderate physical activity, such as walking, is safe and beneficial for most pregnancies unless a doctor advises bed rest for a specific medical reason.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016)",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "myth_swelling_normal",
+    "myth": "Swelling in the hands, feet, or face during pregnancy is always normal and nothing to worry about.",
+    "fact": "Mild swelling in the feet is common, but sudden or severe swelling in the hands, feet, or face, especially with headache or blurred vision, can be a sign of preeclampsia and needs urgent medical attention.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016), Maternal and Fetal Assessment",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "myth_home_remedy_bleeding",
+    "myth": "Vaginal bleeding during pregnancy can be managed at home with rest and home remedies without needing a doctor.",
+    "fact": "Any vaginal bleeding during pregnancy should be reported to a healthcare provider immediately, as it can indicate a serious complication requiring prompt medical care.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016)",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "myth_iron_tablets_harm",
+    "myth": "Iron and folic acid tablets given during pregnancy are harmful or unnecessary if the woman feels healthy.",
+    "fact": "Iron and folic acid supplementation is recommended throughout pregnancy to prevent maternal anemia and neural tube defects in the baby, regardless of how the woman feels.",
+    "source": "Government of India, Anemia Mukt Bharat Programme Guidelines",
+    "sourceUrl": "https://anemiamuktbharat.info/"
+  },
+  {
+    "id": "myth_no_institutional_delivery",
+    "myth": "Home delivery with a traditional birth attendant is just as safe as delivering at a hospital or health facility.",
+    "fact": "Institutional delivery with a trained health provider significantly reduces the risk of maternal and newborn death, since complications can be identified and managed quickly.",
+    "source": "National Health Mission, Government of India, Maternal Health Guidelines",
+    "sourceUrl": "https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=841&lid=309"
+  },
+  {
+    "id": "myth_fewer_anc_visits",
+    "myth": "Antenatal checkups are only necessary if something feels wrong; a healthy-feeling pregnancy doesn't need regular visits.",
+    "fact": "WHO recommends at least 8 antenatal contacts throughout pregnancy, even without symptoms, since many complications develop without early warning signs.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016)",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "myth_headache_ignore",
+    "myth": "A headache during pregnancy is just tiredness and can always be ignored.",
+    "fact": "A persistent or severe headache, especially in the second half of pregnancy, can be an early warning sign of preeclampsia and should be reported to a health worker.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016), Maternal and Fetal Assessment",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "myth_ghee_easy_delivery",
+    "myth": "Consuming large amounts of ghee in late pregnancy will make labor and delivery easier.",
+    "fact": "There is no medical evidence that ghee consumption affects ease of delivery. Excess intake only adds unnecessary calories without labor benefits.",
+    "source": "ICMR-National Institute of Nutrition, Dietary Guidelines for Indians",
+    "sourceUrl": "https://www.nin.res.in/downloads/DietaryGuidelinesforNINwebsite.pdf"
+  },
+  {
+    "id": "myth_avoid_immunization",
+    "myth": "Vaccines like the tetanus toxoid (TT) injection during pregnancy are unsafe for the baby.",
+    "fact": "Tetanus toxoid and other recommended vaccines during pregnancy are safe and protect both mother and newborn from serious, preventable infections.",
+    "source": "National Health Mission, Government of India, Immunization Guidelines",
+    "sourceUrl": "https://nhm.gov.in/"
+  },
+  {
+    "id": "myth_fasting_safe",
+    "myth": "Fasting for long hours during religious observances is completely safe throughout pregnancy without any precautions.",
+    "fact": "Prolonged fasting, especially in later pregnancy, can affect blood sugar and fetal wellbeing. Pregnant women should consult their health provider about safe modifications during fasting periods.",
+    "source": "ICMR-National Institute of Nutrition, Dietary Guidelines for Indians",
+    "sourceUrl": "https://www.nin.res.in/downloads/DietaryGuidelinesforNINwebsite.pdf"
+  },
+  {
+    "id": "myth_reduced_movement_normal",
+    "myth": "It's normal for the baby's movements to reduce a lot in the final weeks and doesn't need to be reported.",
+    "fact": "A noticeable reduction in fetal movement at any stage should be reported to a healthcare provider immediately, as it can be a sign of fetal distress.",
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016), Maternal and Fetal Assessment",
+    "sourceUrl": "https://www.who.int/publications/i/item/9789241549912"
+  }
+]

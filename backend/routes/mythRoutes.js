@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserClient } from '../config/supabase.js';
+import { supabaseAdmin } from '../config/supabase.js';
 
 const router = express.Router();
 
@@ -14,10 +14,7 @@ router.get('/', async (req, res) => {
       return res.status(401).json({ error: 'Authorization header missing.' });
     }
 
-    const token = authHeader.replace('Bearer ', '');
-    const userClient = createUserClient(token);
-
-    const { data: myths, error } = await userClient
+    const { data: myths, error } = await supabaseAdmin
       .from('pregnancy_myths')
       .select('*')
       .order('category', { ascending: true });

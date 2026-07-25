@@ -8,62 +8,15 @@ export default function MythCatalog() {
   const [myths, setMyths] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fallbackCatalog = [
-    {
-      id: 'm1',
-      myth_title: 'Eclipse Exposure Causes Deformity',
-      common_myth: 'Pregnant women must not step outside or look at the sun/moon during an eclipse or baby will be born with cleft lip.',
-      medical_fact: 'Eclipses are natural astronomical events with zero biological impact on fetus growth. Cleft lips are genetic or caused by Folic Acid deficiency.',
-      counseling_guidance: 'Counsel the family gently that stepping outside during an eclipse is safe. Emphasize taking daily Iron-Folic Acid (IFA) tablets.',
-      category: 'Superstition'
-    },
-    {
-      id: 'm2',
-      myth_title: 'Eating Less in 1st Trimester Keeps Baby Small',
-      common_myth: 'Eating normal meals during early pregnancy makes the baby grow too big for normal delivery, so women should reduce food intake.',
-      medical_fact: 'Restricting food intake leads to maternal anemia, low birth weight (LBW), and fetal growth restriction. Mother needs extra nutrition.',
-      counseling_guidance: 'Advise mother to eat 3 balanced meals plus 2 healthy snacks daily (dal, green vegetables, milk, eggs/pulses).',
-      category: 'Nutrition'
-    },
-    {
-      id: 'm3',
-      myth_title: 'Saffron Milk Makes Baby Fair',
-      common_myth: 'Drinking saffron (kesar) milk during pregnancy guarantees a fair skin complexion for the baby.',
-      medical_fact: 'Skin complexion is entirely determined by genetics (melanin genes). Saffron provides aroma but has no influence on baby skin color.',
-      counseling_guidance: 'Encourage drinking milk for its vital calcium and protein content rather than buying expensive saffron.',
-      category: 'Nutrition'
-    },
-    {
-      id: 'm4',
-      myth_title: 'Iron-Folic Acid Tablets Make Fetus Dark',
-      common_myth: 'Taking government-provided Iron and Folic Acid (IFA) tablets makes the baby skin dark or makes the baby too heavy.',
-      medical_fact: 'IFA tablets prevent maternal anemia, postpartum hemorrhage, and preterm labor. They do not alter fetus skin color.',
-      counseling_guidance: 'Strongly encourage taking 1 IFA tablet daily after meals with water. Reassure her that IFA saves mother and baby lives.',
-      category: 'Medication'
-    },
-    {
-      id: 'm5',
-      myth_title: 'Ghee in 9th Month Lubricates Birth Canal',
-      common_myth: 'Drinking large amounts of pure ghee or oil in the 9th month will grease the birth canal and make delivery smooth.',
-      medical_fact: 'Ghee goes into the stomach and digestive system, not the birth canal. Excess fat causes diarrhea and cholesterol spikes.',
-      counseling_guidance: 'Explain that uterine contractions naturally guide delivery, and excess ghee will only cause digestive distress.',
-      category: 'Labor & Delivery'
-    }
-  ];
-
   useEffect(() => {
     async function loadCatalog() {
       setLoading(true);
       try {
         const data = await api.getMythsCatalog();
-        if (data && data.length > 0) {
-          setMyths(data);
-        } else {
-          setMyths(fallbackCatalog);
-        }
+        setMyths(data || []);
       } catch (err) {
-        console.warn('Could not fetch catalog from API, using fallback catalog:', err.message);
-        setMyths(fallbackCatalog);
+        console.warn('Could not fetch the canonical myth catalog:', err.message);
+        setMyths([]);
       } finally {
         setLoading(false);
       }
@@ -71,7 +24,7 @@ export default function MythCatalog() {
     loadCatalog();
   }, []);
 
-  const displayMyths = myths.length > 0 ? myths : fallbackCatalog;
+  const displayMyths = myths;
 
   const filtered = displayMyths.filter(m => {
     const matchesSearch = m.myth_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -142,6 +95,9 @@ export default function MythCatalog() {
 
       {/* Myth Reference Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+        {!loading && filtered.length === 0 && (
+          <p style={{ color: 'var(--text-muted)' }}>No myths are available from the canonical catalog.</p>
+        )}
         {filtered.map((m) => (
           <div key={m.id} className="glass-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>

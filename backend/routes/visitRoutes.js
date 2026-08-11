@@ -6,6 +6,7 @@ import { supabaseAdmin, createUserClient } from '../config/supabase.js';
 import { transcribeAudio } from '../services/groqTranscription.js';
 import { detectMyths } from '../services/groqMythDetector.js';
 import { extractSymptoms } from '../services/groqSymptomExtractor.js';
+import { calculateRiskScore } from '../services/riskScoring.js';
 
 const router = express.Router();
 
@@ -140,11 +141,16 @@ router.post('/:id/process', async (req, res) => {
       .from('pregnancy_myths')
       .select('*');
 
-    // 4. STEP B: Single-purpose Myth Detection (Groq LLM)
-    console.log(`🔍 Initiating Myth Detection for Visit ID: ${visitId}`);
-    const detectedMythList = await detectMyths(transcriptText, referenceMyths || []);
+    // 4+5. Run Myth Detection AND Symptom Extraction concurrently via Promise.all
+    console.log(`🔀 Running myth-check + symptom extraction in parallel for Visit ID: ${visitId}`);
+    const gestationalWeeks = visit.patients?.gestational_weeks || 20;
 
-    // Insert detected myths into DB
+    const [detectedMythList, symptomAnalysis] = await Promise.all([
+      detectMyths(transcriptText, referenceMyths || []),
+      extractSymptoms(transcriptText, gestationalWeeks)
+    ]);
+
+    // Persist myth detection results
     const insertedMyths = [];
     if (detectedMythList && detectedMythList.length > 0) {
       const mythRows = detectedMythList.map(m => ({
@@ -166,11 +172,6 @@ router.post('/:id/process', async (req, res) => {
         insertedMyths.push(...inserted);
       }
     }
-
-    // 5. STEP C: Single-purpose Symptom Extraction & Risk Timeline Update (Groq LLM)
-    console.log(`🩺 Initiating Symptom Extraction & Risk Timeline for Visit ID: ${visitId}`);
-    const gestationalWeeks = visit.patients?.gestational_weeks || 20;
-    const symptomAnalysis = await extractSymptoms(transcriptText, gestationalWeeks);
 
     const insertedSymptoms = [];
     if (symptomAnalysis.extracted_symptoms && symptomAnalysis.extracted_symptoms.length > 0) {
@@ -196,6 +197,15 @@ router.post('/:id/process', async (req, res) => {
       }
     }
 
+    // Calculate new progressive risk score for the patient
+    let riskScoringResult = null;
+    try {
+      console.log(`📈 Calculating progressive risk score for patient: ${visit.patient_id}`);
+      riskScoringResult = await calculateRiskScore(visit.patient_id);
+    } catch (scoringError) {
+      console.error(`⚠️ Risk scoring failed: ${scoringError.message}`);
+    }
+
     // Update final visit status and summary
     const { data: finalVisit, error: updateErr } = await userClient
       .from('visits')
@@ -214,7 +224,8 @@ router.post('/:id/process', async (req, res) => {
         transcript: transcriptText,
         detected_myths: insertedMyths.length > 0 ? insertedMyths : detectedMythList,
         risk_timeline_entries: insertedSymptoms.length > 0 ? insertedSymptoms : symptomAnalysis.extracted_symptoms,
-        summary: symptomAnalysis.summary
+        summary: symptomAnalysis.summary,
+        risk_scoring_breakdown: riskScoringResult
       }
     });
 

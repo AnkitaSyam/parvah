@@ -124,4 +124,39 @@ router.get('/:id/risk-timeline', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/patients/:id/calls
+ * Canonical route: retrieves all visit records for a specific patient.
+ * Uses the visits table (the complete pipeline source of truth).
+ * RLS enforces per-worker isolation via the user-bound Supabase client.
+ */
+router.get('/:id/calls', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Authorization header missing.' });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const userClient = createUserClient(token);
+    const patientId = req.params.id;
+
+    const { data: visits, error } = await userClient
+      .from('visits')
+      .select('*, detected_myths(*), risk_timeline(*)')
+      .eq('patient_id', patientId)
+      .order('visit_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching patient calls (visits):', error.message);
+      return res.status(400).json({ error: `Failed to retrieve patient calls: ${error.message}` });
+    }
+
+    return res.json({ success: true, data: visits });
+  } catch (err) {
+    console.error('Server error in GET /api/patients/:id/calls:', err.message);
+    return res.status(500).json({ error: `Server error: ${err.message}` });
+  }
+});
+
 export default router;

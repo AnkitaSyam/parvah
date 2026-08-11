@@ -67,6 +67,24 @@ export const api = {
     }
   },
 
+  /**
+   * getPatientCalls — canonical method for fetching a patient's visit records.
+   * Hits GET /api/patients/:id/calls, which queries the visits table with
+   * detected_myths and risk_timeline joined. Enforces per-worker RLS.
+   */
+  getPatientCalls: async (patientId) => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE_URL}/patients/${patientId}/calls`, { headers });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch patient calls');
+      return json.data;
+    } catch (err) {
+      console.error('api.getPatientCalls error:', err.message);
+      throw err;
+    }
+  },
+
   // Visits & AI API
   uploadVisitAudio: async (patientId, audioFile) => {
     try {

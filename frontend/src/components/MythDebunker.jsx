@@ -34,14 +34,14 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
       {/* Module Header */}
-      <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(225, 29, 72, 0.15), rgba(139, 92, 246, 0.15))' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--color-primary-light), var(--color-secondary-light))' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: '#fda4af', marginBottom: '0.25rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: 'var(--color-secondary)', marginBottom: '0.25rem' }}>
               <Sparkles size={14} />
               <span>AI Myth Debunker • Verified Rural India Database</span>
             </div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Pregnancy Myth Detection & Counselling Guidance</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-main)' }}>Pregnancy Myth Detection & Counselling Guidance</h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
               Groq LLM extracts beliefs expressed in visit audio, compares them against fixed medical evidence, and provides ASHA counselling scripts.
             </p>
@@ -74,7 +74,7 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
                   <span className="badge badge-moderate" style={{ marginBottom: '0.35rem' }}>
                     Myth Category: Superstition / Nutrition
                   </span>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: '700' }}>{m.myth_title || 'Detected Pregnancy Myth'}</h3>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--text-main)' }}>{m.myth_title || 'Detected Pregnancy Myth'}</h3>
                 </div>
 
                 <button
@@ -89,13 +89,13 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
 
               {/* Extracted Quote */}
               <div style={{
-                background: 'rgba(225, 29, 72, 0.1)',
-                border: '1px solid rgba(225, 29, 72, 0.3)',
+                background: 'rgba(214, 36, 122, 0.05)',
+                border: '1px solid rgba(214, 36, 122, 0.2)',
                 padding: '0.85rem 1rem',
                 borderRadius: 'var(--radius-sm)',
                 marginBottom: '1rem'
               }}>
-                <p style={{ fontSize: '0.85rem', color: '#fda4af' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--color-secondary)' }}>
                   <strong>Extracted Audio Quote:</strong> "{m.extracted_quote}"
                 </p>
               </div>
@@ -103,17 +103,17 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
               {/* Grid Comparison: Myth vs Medical Fact */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                 
-                <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid #f87171' }}>
-                  <h4 style={{ fontSize: '0.9rem', color: '#f87171', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.03)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-danger)' }}>
+                  <h4 style={{ fontSize: '0.9rem', color: 'var(--color-danger)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <AlertCircle size={16} />
                     <span>Common Rural Myth</span>
                   </h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-main)' }}>
                     {m.extracted_quote}
                   </p>
                 </div>
 
-                <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-secondary)' }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.03)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-secondary)' }}>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-secondary)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <Shield size={16} />
                     <span>Verified Medical Fact</span>
@@ -127,16 +127,16 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
 
               {/* ASHA Counselling Script Box */}
               <div style={{
-                background: 'rgba(139, 92, 246, 0.1)',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
+                background: 'rgba(139, 92, 246, 0.05)',
+                border: '1px solid rgba(139, 92, 246, 0.2)',
                 borderRadius: 'var(--radius-sm)',
                 padding: '1rem'
               }}>
-                <h4 style={{ fontSize: '0.875rem', color: '#c084fc', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <h4 style={{ fontSize: '0.875rem', color: '#6d28d9', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <MessageCircle size={16} />
                   <span>ASHA Field Counselling Script (Hindi / Regional)</span>
                 </h4>
-                <p style={{ fontSize: '0.9rem', color: '#ffffff', fontStyle: 'italic' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontStyle: 'italic' }}>
                   "{m.counseling_script || 'दीदी, यह भ्रांति गलत है। मेडिकल जांच के अनुसार गर्भावस्था में पौष्टिक आहार और डॉक्टर की दवा बेहद आवश्यक है।'}"
                 </p>
               </div>

@@ -1,5 +1,6 @@
 import { transcribeAudio } from '../services/transcription.js';
-import { checkMyths } from '../services/mythCheck.js';
+import { detectMyths } from '../services/groqMythDetector.js';
+import { supabaseAdmin } from '../config/supabase.js';
 import path from 'path';
 import fs from 'fs';
 
@@ -22,50 +23,25 @@ async function verify() {
 
   console.log('\n----------------------------------------\n');
 
-  // 2. Test checkMyths in multiple languages
+  // 2. Test detectMyths
   const hindiTranscript = 'सूर्यग्रहण के दौरान बाहर निकलने से बच्चे पर दाग पड़ता है इसलिए उसे बाहर नहीं निकलने दिया। सास ने उसे लोहे की गोली खाने से भी मना किया है।';
   
-  console.log('🔍 Testing checkMyths in HINDI...');
+  console.log('🔍 Testing detectMyths on Hindi transcript...');
   try {
-    const mythsHi = await checkMyths(hindiTranscript, 'hi');
-    console.log('✅ Matches count:', mythsHi.length);
-    mythsHi.forEach((m, i) => {
-      console.log(`\n  [Match ${i+1}] Myth: ${m.mythId}`);
-      console.log(`    English: ${m.correctionTextEn}`);
-      console.log(`    Localized (Hindi): ${m.correctionTextLocal}`);
+    const { data: referenceMyths } = await supabaseAdmin
+      .from('pregnancy_myths')
+      .select('*');
+
+    const detected = await detectMyths(hindiTranscript, referenceMyths || []);
+    console.log('✅ Matches count:', detected.length);
+    detected.forEach((m, i) => {
+      console.log(`\n  [Match ${i+1}] Myth Title: ${m.myth_title}`);
+      console.log(`    Extracted Quote: "${m.extracted_quote}"`);
+      console.log(`    Explanation: ${m.explanation}`);
+      console.log(`    Severity: ${m.severity_impact}`);
     });
   } catch (err) {
-    console.error('❌ Myth check in Hindi failed:', err.message);
-  }
-
-  console.log('\n----------------------------------------\n');
-
-  console.log('🔍 Testing checkMyths in MALAYALAM...');
-  try {
-    const mythsMl = await checkMyths(hindiTranscript, 'ml');
-    console.log('✅ Matches count:', mythsMl.length);
-    mythsMl.forEach((m, i) => {
-      console.log(`\n  [Match ${i+1}] Myth: ${m.mythId}`);
-      console.log(`    English: ${m.correctionTextEn}`);
-      console.log(`    Localized (Malayalam): ${m.correctionTextLocal}`);
-    });
-  } catch (err) {
-    console.error('❌ Myth check in Malayalam failed:', err.message);
-  }
-
-  console.log('\n----------------------------------------\n');
-
-  console.log('🔍 Testing checkMyths in ENGLISH...');
-  try {
-    const mythsEn = await checkMyths(hindiTranscript, 'en');
-    console.log('✅ Matches count:', mythsEn.length);
-    mythsEn.forEach((m, i) => {
-      console.log(`\n  [Match ${i+1}] Myth: ${m.mythId}`);
-      console.log(`    English: ${m.correctionTextEn}`);
-      console.log(`    Localized (English): ${m.correctionTextLocal}`);
-    });
-  } catch (err) {
-    console.error('❌ Myth check in English failed:', err.message);
+    console.error('❌ Myth detection failed:', err.message);
   }
 
   console.log('\n🎉 Local verification completed.');

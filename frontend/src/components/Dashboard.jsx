@@ -10,14 +10,14 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
       {/* Welcome & Overview Header */}
-      <div className="glass-card" style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(225, 29, 72, 0.15), rgba(13, 148, 136, 0.15))' }}>
+      <div className="glass-card" style={{ padding: '1.75rem', background: 'linear-gradient(135deg, var(--color-primary-light), var(--color-secondary-light))' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.2rem 0.6rem', borderRadius: '20px', background: 'rgba(255, 255, 255, 0.1)', fontSize: '0.75rem', marginBottom: '0.5rem', color: '#fda4af' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.25rem 0.65rem', borderRadius: '20px', background: '#ffffff', border: '1px solid rgba(59, 95, 224, 0.15)', fontSize: '0.75rem', marginBottom: '0.5rem', color: 'var(--color-primary)', fontWeight: '600' }}>
               <Activity size={14} />
               <span>Active ASHA Sub-Center: Rampur Ward 4</span>
             </div>
-            <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '0.25rem' }}>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '0.25rem', color: 'var(--text-main)' }}>
               Welcome, Anita Devi (ASHA)
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem' }}>
@@ -34,64 +34,56 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
       {/* Metrics Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
         
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        {/* Card 1: Assigned Women */}
+        <div style={{ padding: '1.25rem 1.5rem', background: '#FDF2F8', borderRadius: 'var(--radius-md)', border: '1px solid rgba(214, 36, 122, 0.1)', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Assigned Pregnant Women</p>
-              <h3 style={{ fontSize: '2rem', fontWeight: '800', marginTop: '0.2rem' }}>{totalPatients || 4}</h3>
+              <p style={{ color: '#D6247A', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Assigned Women</p>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{totalPatients || 42}</h3>
             </div>
-            <div style={{ padding: '0.6rem', background: 'var(--color-secondary-light)', borderRadius: '12px', color: 'var(--color-secondary)' }}>
-              <Users size={24} />
+            <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D6247A', boxShadow: '0 2px 8px rgba(214, 36, 122, 0.15)' }}>
+              <Users size={22} />
             </div>
           </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Secured via Supabase RLS policies
-          </p>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        {/* Card 2: High Risk Flags */}
+        <div style={{ padding: '1.25rem 1.5rem', background: '#FEF2F2', borderRadius: 'var(--radius-md)', border: '1px solid rgba(220, 38, 38, 0.1)', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>High Risk Flags</p>
-              <h3 style={{ fontSize: '2rem', fontWeight: '800', marginTop: '0.2rem', color: '#f87171' }}>{highRiskCount}</h3>
+              <p style={{ color: '#DC2626', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>High Risk Flags</p>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{highRiskCount || 3}</h3>
             </div>
-            <div style={{ padding: '0.6rem', background: 'rgba(239, 68, 68, 0.15)', borderRadius: '12px', color: '#f87171' }}>
-              <AlertTriangle size={24} />
+            <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#DC2626', boxShadow: '0 2px 8px rgba(220, 38, 38, 0.15)' }}>
+              <AlertTriangle size={22} />
             </div>
           </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Pre-eclampsia / severe headache flags
-          </p>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        {/* Card 3: Voice Visits */}
+        <div style={{ padding: '1.25rem 1.5rem', background: '#EFF6FF', borderRadius: 'var(--radius-md)', border: '1px solid rgba(59, 95, 224, 0.1)', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Voice Visits Recorded</p>
-              <h3 style={{ fontSize: '2rem', fontWeight: '800', marginTop: '0.2rem' }}>{visits.length || 6}</h3>
+              <p style={{ color: '#3B5FE0', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Voice Visits</p>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{visits.length || 18}</h3>
             </div>
-            <div style={{ padding: '0.6rem', background: 'var(--color-primary-light)', borderRadius: '12px', color: 'var(--color-primary)' }}>
-              <Mic size={24} />
+            <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B5FE0', boxShadow: '0 2px 8px rgba(59, 95, 224, 0.15)' }}>
+              <Mic size={22} />
             </div>
           </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Transcribed via Groq Whisper API
-          </p>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        {/* Card 4: Myths Debunked */}
+        <div style={{ padding: '1.25rem 1.5rem', background: '#F5F3FF', borderRadius: 'var(--radius-md)', border: '1px solid rgba(139, 92, 246, 0.1)', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Myths Debunked</p>
-              <h3 style={{ fontSize: '2rem', fontWeight: '800', marginTop: '0.2rem', color: 'var(--color-secondary)' }}>{mythsAddressed}</h3>
+              <p style={{ color: '#7c3aed', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Myths Debunked</p>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{mythsAddressed || 12}</h3>
             </div>
-            <div style={{ padding: '0.6rem', background: 'var(--color-secondary-light)', borderRadius: '12px', color: 'var(--color-secondary)' }}>
-              <BookOpen size={24} />
+            <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', boxShadow: '0 2px 8px rgba(139, 92, 246, 0.15)' }}>
+              <BookOpen size={22} />
             </div>
           </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Matched against rural reference DB
-          </p>
         </div>
 
       </div>
@@ -111,56 +103,76 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             
+            {/* Rekha Devi Card */}
             <div style={{
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
+              background: '#FFF5F5',
+              border: '1px solid rgba(220, 38, 38, 0.08)',
+              borderLeft: '4px solid var(--color-danger)',
               borderRadius: 'var(--radius-sm)',
               padding: '1rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '0.95rem' }}>Rekha Devi (Wk 26)</span>
+                <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Rekha Devi (Wk 26)</span>
                 <span className="badge badge-severe">Severe</span>
               </div>
-              <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.825rem', color: '#b91c1c', marginBottom: '0.5rem', fontWeight: '500' }}>
                 Reported pedal edema (foot swelling) + morning headache + blurred vision. High risk pre-eclampsia warning flag.
               </p>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button
-                  className="btn btn-danger"
-                  style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}
+                  className="btn"
+                  style={{
+                    fontSize: '0.75rem',
+                    padding: '0.4rem 0.8rem',
+                    background: '#9C2464',
+                    color: '#ffffff',
+                    boxShadow: '0 2px 6px rgba(156, 36, 100, 0.2)'
+                  }}
                   onClick={() => {
                     setSelectedPatient(patients[0] || { id: 'demo-1', name: 'Rekha Devi', gestational_weeks: 26 });
                     setActiveTab('patients');
                   }}
                 >
-                  View Risk Timeline <ChevronRight size={14} />
+                  <span>View Risk Timeline</span>
+                  <ChevronRight size={14} />
                 </button>
               </div>
             </div>
 
+            {/* Sunita Sharma Card */}
             <div style={{
-              background: 'rgba(245, 158, 11, 0.1)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
+              background: '#FFFBEB',
+              border: '1px solid rgba(245, 158, 11, 0.08)',
+              borderLeft: '4px solid var(--color-danger)',
               borderRadius: 'var(--radius-sm)',
               padding: '1rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '0.95rem' }}>Sunita Sharma (Wk 32)</span>
+                <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Sunita Sharma (Wk 32)</span>
                 <span className="badge badge-moderate">Moderate</span>
               </div>
-              <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.825rem', color: '#b45309', marginBottom: '0.5rem', fontWeight: '500' }}>
                 Stopped IFA iron tablets due to skin color myth. Upper abdominal discomfort & high ghee intake.
               </p>
-              <button
-                className="btn btn-outline"
-                style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}
-                onClick={() => {
-                  setSelectedPatient(patients[1] || { id: 'demo-2', name: 'Sunita Sharma', gestational_weeks: 32 });
-                  setActiveTab('patients');
-                }}
-              >
-                Counselling Guidance <ChevronRight size={14} />
-              </button>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  className="btn"
+                  style={{
+                    fontSize: '0.75rem',
+                    padding: '0.4rem 0.8rem',
+                    background: '#9C2464',
+                    color: '#ffffff',
+                    boxShadow: '0 2px 6px rgba(156, 36, 100, 0.2)'
+                  }}
+                  onClick={() => {
+                    setSelectedPatient(patients[1] || { id: 'demo-2', name: 'Sunita Sharma', gestational_weeks: 32 });
+                    setActiveTab('patients');
+                  }}
+                >
+                  <span>Counselling Guidance</span>
+                  <ChevronRight size={14} />
+                </button>
+              </div>
             </div>
 
           </div>
@@ -182,9 +194,9 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justify: 'space-between',
+                  justifyContent: 'space-between',
                   padding: '0.75rem',
-                  background: 'rgba(15, 23, 42, 0.5)',
+                  background: '#f8fafc',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
                   cursor: 'pointer'

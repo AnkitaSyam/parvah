@@ -37,14 +37,14 @@ export default function MythCatalog() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
       {/* Header */}
-      <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(13, 148, 136, 0.15), rgba(30, 41, 59, 0.8))' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--color-primary-light), var(--color-secondary-light))' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: 'var(--color-secondary)', marginBottom: '0.25rem' }}>
               <BookOpen size={14} />
               <span>Fixed Reference Knowledge Base • Rural India</span>
             </div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Pregnancy Myths Reference Catalog</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-main)' }}>Pregnancy Myths Reference Catalog</h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
               Fixed database used by Groq AI to match field transcript beliefs against medical facts.
             </p>
@@ -62,10 +62,10 @@ export default function MythCatalog() {
                 style={{
                   width: '100%',
                   padding: '0.55rem 0.75rem 0.55rem 2.2rem',
-                  background: 'rgba(15, 23, 42, 0.8)',
+                  background: '#ffffff',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   fontSize: '0.85rem'
                 }}
               />
@@ -76,10 +76,10 @@ export default function MythCatalog() {
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
                 padding: '0.55rem 0.85rem',
-                background: 'rgba(15, 23, 42, 0.8)',
+                background: '#ffffff',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 fontSize: '0.85rem'
               }}
             >
@@ -108,12 +108,12 @@ export default function MythCatalog() {
                 <ShieldCheck size={18} color="var(--color-secondary)" />
               </div>
 
-              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem', color: '#ffffff' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem', color: 'var(--text-main)' }}>
                 {m.myth_title}
               </h3>
 
-              <div style={{ marginBottom: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.65rem', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid #f87171' }}>
-                <p style={{ fontSize: '0.8rem', color: '#f87171' }}>
+              <div style={{ marginBottom: '0.75rem', background: 'rgba(220, 38, 38, 0.05)', padding: '0.65rem', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-danger)' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-danger)' }}>
                   <strong>Myth:</strong> "{m.common_myth}"
                 </p>
               </div>

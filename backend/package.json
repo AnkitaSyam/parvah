@@ -10,7 +10,7 @@
     "seed": "node scripts/seed.js",
     "test:rls": "node scripts/testRls.js",
     "seed:myths": "node scripts/seedMythDatabase.js",
-    "test:myths": "node tests/testMythCheck.js"
+    "test:redflags": "node tests/testRedFlagClassification.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",

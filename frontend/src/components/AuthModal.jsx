@@ -95,16 +95,27 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{
-            width: '50px',
-            height: '50px',
+            width: '60px',
+            height: '60px',
             borderRadius: '50%',
-            background: 'var(--color-primary-light)',
+            background: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 0.75rem auto'
+            margin: '0 auto 0.75rem auto',
+            border: '1px solid rgba(13, 148, 136, 0.3)',
+            overflow: 'hidden',
+            padding: '4px'
           }}>
-            <Shield size={28} color="var(--color-primary)" />
+            <img
+              src="/logo.png"
+              alt="Parvah Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain'
+              }}
+            />
           </div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: '700' }}>
             {isSignUp ? 'ASHA Worker Registration' : 'ASHA Worker Login'}

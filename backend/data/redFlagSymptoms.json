@@ -1,0 +1,78 @@
+[
+  {
+    "id": "rf_severe_bleeding",
+    "symptom": "Severe Bleeding",
+    "keywords": [
+      "severe bleeding", "heavy bleeding", "vaginal bleeding", "antepartum haemorrhage",
+      "postpartum haemorrhage", "bleeding heavily", "blood loss", "haemorrhage",
+      "खून बह रहा है", "भारी रक्तस्राव", "योनि से खून"
+    ],
+    "severity": "severe",
+    "flag_description": "Severe or heavy vaginal bleeding reported — possible placenta previa, abruption, or postpartum haemorrhage. Immediate emergency referral required.",
+    "recommended_asha_action": "Do NOT attempt home management. Call 108 immediately. Keep patient lying flat, do not give anything by mouth, monitor pulse. Accompany patient to nearest FRU/hospital.",
+    "requires_doctor_referral": true,
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016)",
+    "source_url": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "rf_sudden_vision_loss",
+    "symptom": "Sudden Vision Loss",
+    "keywords": [
+      "sudden vision loss", "cannot see", "lost vision", "blurred vision", "blurred sight",
+      "visual disturbance", "seeing spots", "seeing stars", "flashing lights", "double vision",
+      "अचानक दिखना बंद", "धुंधला दिखना", "आँखों के आगे अँधेरा", "नज़र कमज़ोर"
+    ],
+    "severity": "severe",
+    "flag_description": "Sudden or severe visual disturbance reported — high-risk pre-eclampsia/eclampsia warning sign. Requires immediate BP check and emergency referral.",
+    "recommended_asha_action": "Measure blood pressure immediately. If BP ≥ 140/90 mmHg, call 108 and arrange urgent transfer to PHC/FRU. Do not leave patient alone.",
+    "requires_doctor_referral": true,
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016), Section on Hypertensive Disorders",
+    "source_url": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "rf_difficulty_breathing",
+    "symptom": "Difficulty Breathing",
+    "keywords": [
+      "difficulty breathing", "shortness of breath", "can't breathe", "cannot breathe",
+      "breathlessness", "struggling to breathe", "laboured breathing", "chest tightness",
+      "rapid breathing", "respiratory distress",
+      "सांस लेने में तकलीफ", "सांस फूलना", "घबराहट में सांस", "सांस नहीं आ रही"
+    ],
+    "severity": "severe",
+    "flag_description": "Breathing difficulty or acute breathlessness reported during pregnancy — may indicate pulmonary oedema, anaemia, or cardiac complication. Emergency evaluation required.",
+    "recommended_asha_action": "Sit patient upright. Call 108 immediately. Do not delay — severe breathlessness in pregnancy is a medical emergency.",
+    "requires_doctor_referral": true,
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016)",
+    "source_url": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "rf_severe_abdominal_pain",
+    "symptom": "Severe Abdominal Pain",
+    "keywords": [
+      "severe abdominal pain", "severe stomach pain", "unbearable pain", "intense pain",
+      "excruciating pain", "severe cramps", "sharp abdominal pain", "uterine pain",
+      "पेट में तेज दर्द", "असहनीय पेट दर्द", "भयंकर दर्द", "पेट में ऐंठन"
+    ],
+    "severity": "severe",
+    "flag_description": "Severe or unbearable abdominal pain reported — may indicate placental abruption, uterine rupture, or HELLP syndrome. Requires emergency evaluation.",
+    "recommended_asha_action": "Do not give painkillers. Call 108 immediately. Note onset time and location of pain. Keep patient still and calm. Arrange emergency transport to FRU.",
+    "requires_doctor_referral": true,
+    "source": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience (2016)",
+    "source_url": "https://www.who.int/publications/i/item/9789241549912"
+  },
+  {
+    "id": "rf_convulsions",
+    "symptom": "Convulsions / Seizures",
+    "keywords": [
+      "convulsions", "seizures", "fits", "eclampsia", "unconscious", "passed out",
+      "shaking uncontrollably", "jerking", "fitting", "loss of consciousness",
+      "दौरे", "मिरगी", "बेहोशी", "झटके आना", "दौरा पड़ना", "अचेत"
+    ],
+    "severity": "severe",
+    "flag_description": "Convulsions or seizures reported — eclampsia is life-threatening for both mother and baby. Highest-priority obstetric emergency.",
+    "recommended_asha_action": "Call 108 IMMEDIATELY. Place patient on left side to prevent aspiration. Clear airway. Do NOT restrain limbs. Record duration and onset of seizure. Rush to nearest FRU with Magnesium Sulphate capability.",
+    "requires_doctor_referral": true,
+    "source": "WHO Recommendations for Prevention and Treatment of Pre-Eclampsia and Eclampsia (2011)",
+    "source_url": "https://www.who.int/publications/i/item/9789241548335"
+  }
+]

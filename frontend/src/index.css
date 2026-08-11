@@ -2,51 +2,53 @@
   --font-family-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-family-heading: 'Outfit', 'Inter', system-ui, sans-serif;
 
-  /* Color Palette - Warm Maternal Coral & Emerald Clinical Security */
-  --color-primary: #e11d48;
-  --color-primary-hover: #be123c;
-  --color-primary-light: rgba(225, 29, 72, 0.1);
+  /* Color Palette - Blue Clinical Primary & Warm Pink Brand Secondary */
+  --color-primary: #3B5FE0;
+  --color-primary-hover: #2b49b3;
+  --color-primary-light: rgba(59, 95, 224, 0.08);
 
-  --color-secondary: #0d9488;
-  --color-secondary-hover: #0f766e;
-  --color-secondary-light: rgba(13, 148, 136, 0.1);
+  --color-secondary: #D6247A;
+  --color-secondary-hover: #b51a64;
+  --color-secondary-light: rgba(214, 36, 122, 0.08);
 
-  --color-accent: #8b5cf6;
+  --color-accent: #9C2464;
+  --color-accent-hover: #801950;
+  --color-danger: #DC2626;
 
   /* Background & Cards */
-  --bg-main: #0f172a;
-  --bg-card: #1e293b;
-  --bg-card-glass: rgba(30, 41, 59, 0.85);
-  --bg-card-hover: #334155;
+  --bg-main: #F4F6FB;
+  --bg-card: #ffffff;
+  --bg-card-glass: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: #f1f5f9;
 
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-color-glow: rgba(225, 29, 72, 0.4);
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-color-glow: rgba(59, 95, 224, 0.2);
 
   /* Typography */
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-inverse: #0f172a;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
 
   /* Severity colors */
-  --severity-mild-bg: rgba(16, 185, 129, 0.15);
-  --severity-mild-text: #34d399;
-  --severity-mild-border: rgba(52, 211, 153, 0.3);
+  --severity-mild-bg: rgba(16, 185, 129, 0.1);
+  --severity-mild-text: #059669;
+  --severity-mild-border: rgba(16, 185, 129, 0.2);
 
-  --severity-moderate-bg: rgba(245, 158, 11, 0.15);
-  --severity-moderate-text: #fbbf24;
-  --severity-moderate-border: rgba(251, 191, 36, 0.3);
+  --severity-moderate-bg: rgba(245, 158, 11, 0.1);
+  --severity-moderate-text: #d97706;
+  --severity-moderate-border: rgba(245, 158, 11, 0.2);
 
-  --severity-severe-bg: rgba(239, 68, 68, 0.2);
-  --severity-severe-text: #f87171;
-  --severity-severe-border: rgba(248, 113, 113, 0.4);
+  --severity-severe-bg: rgba(220, 38, 38, 0.1);
+  --severity-severe-text: #dc2626;
+  --severity-severe-border: rgba(220, 38, 38, 0.2);
 
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-full: 9999px;
 
-  --shadow-glow: 0 0 25px rgba(225, 29, 72, 0.25);
-  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px rgba(59, 95, 224, 0.15);
+  --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
 
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -66,8 +68,8 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(13, 148, 136, 0.08) 0%, transparent 40%);
+    radial-gradient(circle at 10% 20%, rgba(59, 95, 224, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(214, 36, 122, 0.04) 0%, transparent 45%);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -273,10 +275,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94a3b8;
+}
+
+/* Custom Nav Pill styling matching reference screen */
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.nav-pill:hover {
+  color: var(--text-main);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.nav-pill.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(59, 95, 224, 0.2);
 }

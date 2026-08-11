@@ -9,19 +9,30 @@ export default function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLo
         {/* Brand Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={() => setActiveTab('dashboard')}>
           <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #e11d48, #8b5cf6)',
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            backgroundColor: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(225, 29, 72, 0.4)'
+            overflow: 'hidden',
+            boxShadow: '0 0 10px rgba(13, 148, 136, 0.2)',
+            border: '1px solid rgba(13, 148, 136, 0.3)',
+            padding: '2px'
           }}>
-            <HeartPulse size={24} color="#ffffff" />
+            <img
+              src="/logo.png"
+              alt="Parvah Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain'
+              }}
+            />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.35rem', fontWeight: '800', lineHeight: 1.1, background: 'linear-gradient(90deg, #ffffff, #fda4af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <h1 style={{ fontSize: '1.35rem', fontWeight: '800', lineHeight: 1.1, background: 'linear-gradient(90deg, var(--text-main), var(--color-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               परवाह <span style={{ fontSize: '0.9rem', fontWeight: '500', color: 'var(--color-secondary)' }}>Parvah</span>
             </h1>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Maternal Health AI Platform • Rural India ASHA Network</p>
@@ -29,47 +40,42 @@ export default function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLo
         </div>
 
         {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
           <button
-            className={`btn ${activeTab === 'dashboard' ? 'btn-primary' : 'btn-outline'}`}
+            className={`nav-pill ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
-            style={{ fontSize: '0.85rem', padding: '0.5rem 0.9rem' }}
           >
             <HeartPulse size={16} />
             <span>Dashboard</span>
           </button>
 
           <button
-            className={`btn ${activeTab === 'patients' ? 'btn-primary' : 'btn-outline'}`}
+            className={`nav-pill ${activeTab === 'patients' ? 'active' : ''}`}
             onClick={() => setActiveTab('patients')}
-            style={{ fontSize: '0.85rem', padding: '0.5rem 0.9rem' }}
           >
             <Users size={16} />
             <span>Patients</span>
           </button>
 
           <button
-            className={`btn ${activeTab === 'recorder' ? 'btn-primary' : 'btn-outline'}`}
+            className={`nav-pill ${activeTab === 'recorder' ? 'active' : ''}`}
             onClick={() => setActiveTab('recorder')}
-            style={{ fontSize: '0.85rem', padding: '0.5rem 0.9rem' }}
           >
             <Mic size={16} />
             <span>Record Visit</span>
           </button>
 
           <button
-            className={`btn ${activeTab === 'myths' ? 'btn-primary' : 'btn-outline'}`}
+            className={`nav-pill ${activeTab === 'myths' ? 'active' : ''}`}
             onClick={() => setActiveTab('myths')}
-            style={{ fontSize: '0.85rem', padding: '0.5rem 0.9rem' }}
           >
             <BookOpen size={16} />
             <span>Myth DB</span>
           </button>
 
           <button
-            className={`btn ${activeTab === 'pipeline' ? 'btn-primary' : 'btn-outline'}`}
+            className={`nav-pill ${activeTab === 'pipeline' ? 'active' : ''}`}
             onClick={() => setActiveTab('pipeline')}
-            style={{ fontSize: '0.85rem', padding: '0.5rem 0.9rem' }}
           >
             <AudioLines size={16} />
             <span>Audio Pipeline Test</span>

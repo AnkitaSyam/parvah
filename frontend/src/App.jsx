@@ -14,10 +14,8 @@ import { api } from './lib/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [user, setUser] = useState({
-    id: '11111111-1111-1111-1111-111111111111',
-    email: 'asha.anita@parvah.health'
-  });
+  const [user, setUser] = useState(null);
+  const [loadingSession, setLoadingSession] = useState(true);
 
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -33,16 +31,16 @@ export default function App() {
   // Check auth session
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-      }
+      setUser(session?.user || null);
+      setLoadingSession(false);
+    }).catch((err) => {
+      console.error('Session verification error:', err);
+      setUser(null);
+      setLoadingSession(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || {
-        id: '11111111-1111-1111-1111-111111111111',
-        email: 'asha.anita@parvah.health'
-      });
+      setUser(session?.user || null);
     });
 
     return () => subscription.unsubscribe();
@@ -50,6 +48,11 @@ export default function App() {
 
   // Fetch Patients
   useEffect(() => {
+    if (!user) {
+      setPatients([]);
+      setSelectedPatient(null);
+      return;
+    }
     async function loadPatients() {
       try {
         const data = await api.getPatients();
@@ -108,6 +111,50 @@ export default function App() {
     setSmsData(alertInfo);
     setIsSmsOpen(true);
   };
+
+  if (loadingSession) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        width: '100vw',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg-main)',
+        color: 'var(--text-main)',
+        gap: '1rem',
+        fontFamily: 'var(--font-family-body)'
+      }}>
+        <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', border: '1px solid var(--border-color)' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            border: '3px solid var(--color-primary-light)',
+            borderTopColor: 'var(--color-primary)',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}} />
+          <p style={{ fontWeight: '600' }}>Confirming session status...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <AuthModal
+        isOpen={true}
+        onClose={null}
+        onAuthSuccess={(u) => setUser(u)}
+      />
+    );
+  }
 
   return (
     <div className="app-container">

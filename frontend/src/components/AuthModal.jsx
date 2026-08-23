@@ -76,21 +76,23 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       padding: '1rem'
     }}>
       <div className="glass-card" style={{ maxWidth: '440px', width: '100%', padding: '2rem', position: 'relative' }}>
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-muted)',
-            fontSize: '1.25rem',
-            cursor: 'pointer'
-          }}
-        >
-          ✕
-        </button>
+        {onClose && (
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              fontSize: '1.25rem',
+              cursor: 'pointer'
+            }}
+          >
+            ✕
+          </button>
+        )}
 
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{

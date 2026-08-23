@@ -39,7 +39,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ color: '#D6247A', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Assigned Women</p>
-              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{totalPatients || 42}</h3>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>{totalPatients || 42}</h3>
             </div>
             <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D6247A', boxShadow: '0 2px 8px rgba(214, 36, 122, 0.15)' }}>
               <Users size={22} />
@@ -52,7 +52,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ color: '#DC2626', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>High Risk Flags</p>
-              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{highRiskCount || 3}</h3>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>{highRiskCount || 3}</h3>
             </div>
             <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#DC2626', boxShadow: '0 2px 8px rgba(220, 38, 38, 0.15)' }}>
               <AlertTriangle size={22} />
@@ -65,7 +65,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ color: '#3B5FE0', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Voice Visits</p>
-              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{visits.length || 18}</h3>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>{visits.length || 18}</h3>
             </div>
             <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B5FE0', boxShadow: '0 2px 8px rgba(59, 95, 224, 0.15)' }}>
               <Mic size={22} />
@@ -78,7 +78,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ color: '#7c3aed', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Myths Debunked</p>
-              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: '#0f172a', lineHeight: '1' }}>{mythsAddressed || 12}</h3>
+              <h3 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>{mythsAddressed || 12}</h3>
             </div>
             <div style={{ width: '42px', height: '42px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', boxShadow: '0 2px 8px rgba(139, 92, 246, 0.15)' }}>
               <BookOpen size={22} />
@@ -112,7 +112,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
               padding: '1rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Rekha Devi (Wk 26)</span>
+                <span style={{ fontWeight: '700', fontSize: '0.95rem', color: 'var(--text-main)' }}>Rekha Devi (Wk 26)</span>
                 <span className="badge badge-severe">Severe</span>
               </div>
               <p style={{ fontSize: '0.825rem', color: '#b91c1c', marginBottom: '0.5rem', fontWeight: '500' }}>
@@ -148,7 +148,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
               padding: '1rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Sunita Sharma (Wk 32)</span>
+                <span style={{ fontWeight: '700', fontSize: '0.95rem', color: 'var(--text-main)' }}>Sunita Sharma (Wk 32)</span>
                 <span className="badge badge-moderate">Moderate</span>
               </div>
               <p style={{ fontSize: '0.825rem', color: '#b45309', marginBottom: '0.5rem', fontWeight: '500' }}>
@@ -196,7 +196,7 @@ export default function Dashboard({ patients = [], visits = [], setActiveTab, se
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '0.75rem',
-                  background: '#f8fafc',
+                  background: '#FFF9F3',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
                   cursor: 'pointer'

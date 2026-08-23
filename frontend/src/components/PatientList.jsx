@@ -65,7 +65,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                 background: 'var(--bg-card-glass)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--input-text)',
                 fontSize: '0.85rem'
               }}
             />
@@ -159,7 +159,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
         <div style={{
           position: 'fixed',
           top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(15, 23, 42, 0.8)',
+          background: 'rgba(74, 29, 53, 0.58)',
           backdropFilter: 'blur(8px)',
           display: 'flex',
           alignItems: 'center',
@@ -191,7 +191,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                   placeholder="e.g. Sangeeta Devi"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff' }}
+                  style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                 />
               </div>
 
@@ -204,7 +204,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                     placeholder="24"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff' }}
+                    style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                   />
                 </div>
 
@@ -216,7 +216,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                     max="42"
                     value={gestationalWeeks}
                     onChange={(e) => setGestationalWeeks(e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff' }}
+                    style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                   />
                 </div>
               </div>
@@ -228,7 +228,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                     type="text"
                     value={village}
                     onChange={(e) => setVillage(e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff' }}
+                    style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                   />
                 </div>
 
@@ -237,7 +237,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                   <select
                     value={bloodGroup}
                     onChange={(e) => setBloodGroup(e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff' }}
+                    style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                   >
                     <option value="A+">A+</option>
                     <option value="B+">B+</option>
@@ -255,7 +255,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
                   placeholder="+91 98765 43210"
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff' }}
+                  style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                 />
               </div>
 

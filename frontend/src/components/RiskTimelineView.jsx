@@ -58,7 +58,7 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
       {/* Patient Profile Banner */}
-      <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(13, 148, 136, 0.15))' }}>
+      <div className="glass-card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, #FFF9F3, #FCE3D7)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: 'var(--color-secondary)', marginBottom: '0.25rem' }}>
@@ -88,7 +88,7 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
             <span style={{ color: 'var(--color-secondary)', fontWeight: '700' }}>Current: Week {currentWeek}</span>
             <span>Week 40 (Full Term)</span>
           </div>
-          <div style={{ width: '100%', height: '10px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '5px', overflow: 'hidden', position: 'relative' }}>
+          <div style={{ width: '100%', height: '10px', background: '#F0C9B8', borderRadius: '5px', overflow: 'hidden', position: 'relative' }}>
             <div style={{
               width: `${(currentWeek / 40) * 100}%`,
               height: '100%',
@@ -136,7 +136,7 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
                 <div className="glass-card" style={{
                   padding: '1.25rem',
                   border: isSevere ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid var(--border-color)',
-                  background: isSevere ? 'rgba(239, 68, 68, 0.05)' : 'rgba(30, 41, 59, 0.6)'
+                  background: isSevere ? 'rgba(239, 68, 68, 0.05)' : '#FFFDF9'
                 }}>
                   
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
@@ -174,7 +174,7 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
                   </p>
 
                   <div style={{
-                    background: 'rgba(15, 23, 42, 0.6)',
+                    background: '#FFF3EC',
                     padding: '0.75rem 1rem',
                     borderRadius: 'var(--radius-sm)',
                     borderLeft: `4px solid ${isSevere ? '#f87171' : 'var(--color-secondary)'}`

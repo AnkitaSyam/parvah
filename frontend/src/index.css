@@ -2,31 +2,33 @@
   --font-family-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-family-heading: 'Outfit', 'Inter', system-ui, sans-serif;
 
-  /* Color Palette - Blue Clinical Primary & Warm Pink Brand Secondary */
-  --color-primary: #3B5FE0;
-  --color-primary-hover: #2b49b3;
-  --color-primary-light: rgba(59, 95, 224, 0.08);
+  /* Warm maternal-health palette: cream, rose, plum and marigold */
+  --color-primary: #B33B6B;
+  --color-primary-hover: #8D294F;
+  --color-primary-light: rgba(179, 59, 107, 0.10);
 
-  --color-secondary: #D6247A;
-  --color-secondary-hover: #b51a64;
-  --color-secondary-light: rgba(214, 36, 122, 0.08);
+  --color-secondary: #D06B32;
+  --color-secondary-hover: #A94F20;
+  --color-secondary-light: rgba(208, 107, 50, 0.11);
 
-  --color-accent: #9C2464;
-  --color-accent-hover: #801950;
+  --color-accent: #7B3156;
+  --color-accent-hover: #5E203F;
   --color-danger: #DC2626;
 
   /* Background & Cards */
-  --bg-main: #F4F6FB;
-  --bg-card: #ffffff;
-  --bg-card-glass: rgba(255, 255, 255, 0.9);
-  --bg-card-hover: #f1f5f9;
+  --bg-main: #FFF5ED;
+  --bg-card: #FFFCF8;
+  --bg-card-glass: rgba(255, 252, 248, 0.92);
+  --bg-card-hover: #FCE7D9;
+  --input-bg: #FFF8F2;
+  --input-text: #4A1D35;
 
-  --border-color: rgba(15, 23, 42, 0.08);
-  --border-color-glow: rgba(59, 95, 224, 0.2);
+  --border-color: rgba(123, 49, 86, 0.16);
+  --border-color-glow: rgba(179, 59, 107, 0.25);
 
   /* Typography */
-  --text-main: #0f172a;
-  --text-muted: #64748b;
+  --text-main: #4A1D35;
+  --text-muted: #8A5A71;
   --text-inverse: #ffffff;
 
   /* Severity colors */
@@ -47,8 +49,8 @@
   --radius-lg: 20px;
   --radius-full: 9999px;
 
-  --shadow-glow: 0 0 25px rgba(59, 95, 224, 0.15);
-  --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+  --shadow-glow: 0 0 25px rgba(179, 59, 107, 0.16);
+  --shadow-card: 0 10px 25px -5px rgba(105, 43, 65, 0.10);
 
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -68,8 +70,8 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(59, 95, 224, 0.04) 0%, transparent 45%),
-    radial-gradient(circle at 90% 80%, rgba(214, 36, 122, 0.04) 0%, transparent 45%);
+    radial-gradient(circle at 10% 20%, rgba(208, 107, 50, 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(179, 59, 107, 0.09) 0%, transparent 45%);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -95,7 +97,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(179, 59, 107, 0.28);
 }
 
 .btn {
@@ -115,25 +117,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), #f43f5e);
+  background: linear-gradient(135deg, var(--color-primary), #D06B32);
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, var(--color-primary-hover), #e11d48);
+  background: linear-gradient(135deg, var(--color-primary-hover), #A94F20);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(225, 29, 72, 0.5);
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--color-secondary), #14b8a6);
+  background: linear-gradient(135deg, var(--color-secondary), #9C2464);
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
 }
 
 .btn-secondary:hover {
-  background: linear-gradient(135deg, var(--color-secondary-hover), #0d9488);
+  background: linear-gradient(135deg, var(--color-secondary-hover), #801950);
   transform: translateY(-1px);
 }
 
@@ -144,8 +146,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--color-primary-light);
+  border-color: rgba(179, 59, 107, 0.35);
 }
 
 .btn-danger {
@@ -275,12 +277,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #D9A7B9;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #B76A89;
 }
 
 /* Custom Nav Pill styling matching reference screen */
@@ -302,11 +304,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .nav-pill:hover {
   color: var(--text-main);
-  background: rgba(15, 23, 42, 0.04);
+  background: var(--color-primary-light);
 }
 
 .nav-pill.active {
   background: var(--color-primary);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(59, 95, 224, 0.2);
+  box-shadow: 0 4px 12px rgba(179, 59, 107, 0.25);
 }

@@ -46,13 +46,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setLoading(true);
     setErrorMsg('');
     try {
-      // Simulate/Trigger demo user session
-      const demoUser = {
-        id: '11111111-1111-1111-1111-111111111111',
-        email: 'asha.anita@parvah.health',
-        user_metadata: { name: 'Anita Devi (ASHA Worker)' }
-      };
-      onAuthSuccess(demoUser);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: 'asha.workera@parvah.health',
+        password: 'TestPassword123!'
+      });
+      if (error) throw error;
+      onAuthSuccess(data.user);
       onClose();
     } catch (err) {
       setErrorMsg('Demo login failed: ' + err.message);
@@ -68,7 +67,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(15, 23, 42, 0.8)',
+      background: 'rgba(74, 29, 53, 0.58)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -159,10 +158,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 style={{
                   width: '100%',
                   padding: '0.65rem 0.8rem 0.65rem 2.4rem',
-                  background: 'rgba(15, 23, 42, 0.6)',
+                  background: 'var(--input-bg)',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--input-text)',
                   fontSize: '0.9rem'
                 }}
               />
@@ -184,10 +183,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 style={{
                   width: '100%',
                   padding: '0.65rem 0.8rem 0.65rem 2.4rem',
-                  background: 'rgba(15, 23, 42, 0.6)',
+                  background: 'var(--input-bg)',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--input-text)',
                   fontSize: '0.9rem'
                 }}
               />
@@ -223,7 +222,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
         >
           <UserCheck size={18} />
-          <span>Quick Demo Login (Anita ASHA Worker)</span>
+          <span>Quick Demo Login (ASHA Worker)</span>
         </button>
 
         <p style={{ marginTop: '1.25rem', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>

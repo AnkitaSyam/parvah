@@ -117,7 +117,10 @@ export default function App() {
         setActiveTab={setActiveTab}
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onLogout={() => setUser(null)}
+        onLogout={async () => {
+          await supabase.auth.signOut();
+          setUser(null);
+        }}
       />
 
       {/* Tab Content */}

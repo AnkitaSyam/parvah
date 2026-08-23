@@ -20,12 +20,25 @@ export default function UploadTest() {
 
   // ─── helpers ───────────────────────────────────────────────────────────────
   const getAuthHeader = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      return session?.access_token ? `Bearer ${session.access_token}` : 'Bearer demo-asha-token';
-    } catch {
-      return 'Bearer demo-asha-token';
+    const { data: { session } } = await supabase.auth.getSession();
+    let token = session?.access_token;
+
+    if (session && session.expires_at) {
+      const now = Math.floor(Date.now() / 1000);
+      // If the token is within 10 seconds of expiring, refresh it
+      if (session.expires_at - now < 10) {
+        const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+        if (!refreshError && refreshedSession) {
+          token = refreshedSession.access_token;
+        }
+      }
     }
+
+    if (!token) {
+      throw new Error('No active authentication session found. Please log in.');
+    }
+
+    return `Bearer ${token}`;
   };
 
   const handleDrag = (e) => {
@@ -125,9 +138,9 @@ export default function UploadTest() {
   return (
     <div style={{
       maxWidth: '680px', width: '100%', margin: '1.5rem auto',
-      background: 'rgba(30,41,59,0.75)', backdropFilter: 'blur(16px)',
-      border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px',
-      padding: '2.25rem', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', color: '#f8fafc'
+      background: 'linear-gradient(145deg, #FFFDF9, #FCE4D8)', backdropFilter: 'blur(16px)',
+      border: '1px solid rgba(179,59,107,0.18)', borderRadius: '16px',
+      padding: '2.25rem', boxShadow: '0 25px 50px -12px rgba(105,43,65,0.16)', color: 'var(--text-main)'
     }}>
 
       {/* ── Title ── */}
@@ -137,7 +150,7 @@ export default function UploadTest() {
         </div>
         <div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: '800', margin: 0 }}>Full Pipeline Integration Test</h2>
-          <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: '0.1rem 0 0' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '0.1rem 0 0' }}>
             Visits pipeline: upload → transcription + myth-check + symptom extraction (Promise.all)
           </p>
         </div>
@@ -148,45 +161,45 @@ export default function UploadTest() {
 
         {/* Patient ID */}
         <div>
-          <label htmlFor="patientId" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.5rem', color: '#cbd5e1' }}>
+          <label htmlFor="patientId" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-main)' }}>
             Patient ID (UUID)
           </label>
           <input
             id="patientId" type="text"
             placeholder="e.g. 415125c3-237c-475c-9c88-8ce3427ebde5"
             value={patientId} onChange={(e) => setPatientId(e.target.value)}
-            style={{ width: '100%', padding: '0.75rem 1rem', background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
+            style={{ width: '100%', padding: '0.75rem 1rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'var(--input-text)', fontSize: '0.9rem', outline: 'none' }}
             required
           />
         </div>
 
         {/* Drag-drop audio */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.5rem', color: '#cbd5e1' }}>
+          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-main)' }}>
             Audio Recording File
           </label>
           <div
             onDragEnter={handleDrag} onDragOver={handleDrag}
             onDragLeave={handleDrag} onDrop={handleDrop}
             style={{
-              border: `2px dashed ${dragActive ? '#e11d48' : 'rgba(255,255,255,0.15)'}`,
+              border: `2px dashed ${dragActive ? '#e11d48' : 'rgba(179,59,107,0.28)'}`,
               borderRadius: '12px', padding: '2rem 1rem', textAlign: 'center',
-              background: dragActive ? 'rgba(225,29,72,0.05)' : 'rgba(15,23,42,0.3)',
+              background: dragActive ? 'rgba(225,29,72,0.05)' : '#FFF6F0',
               cursor: 'pointer', transition: 'all 0.2s', position: 'relative'
             }}
           >
             <input type="file" accept="audio/*" onChange={handleFileChange}
               style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
-            <Upload size={32} style={{ color: audioFile ? '#2dd4bf' : '#94a3b8', marginBottom: '0.75rem', strokeWidth: 1.5 }} />
+            <Upload size={32} style={{ color: audioFile ? '#2dd4bf' : 'var(--color-primary)', marginBottom: '0.75rem', strokeWidth: 1.5 }} />
             {audioFile ? (
               <div>
                 <p style={{ fontSize: '0.9rem', fontWeight: '600', color: '#2dd4bf', marginBottom: '0.25rem' }}>Selected: {audioFile.name}</p>
-                <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{(audioFile.size / 1024).toFixed(1)} KB — tap to replace</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{(audioFile.size / 1024).toFixed(1)} KB — tap to replace</p>
               </div>
             ) : (
               <div>
-                <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.25rem' }}>Drag and drop, or click to browse</p>
-                <p style={{ fontSize: '0.75rem', color: '#64748b' }}>WebM, MP3, WAV, M4A, OGG</p>
+                <p style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-main)', marginBottom: '0.25rem' }}>Drag and drop, or click to browse</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>WebM, MP3, WAV, M4A, OGG</p>
               </div>
             )}
           </div>
@@ -203,7 +216,7 @@ export default function UploadTest() {
         {/* Submit */}
         <button type="submit" disabled={loading} style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-          padding: '0.85rem', background: loading ? '#475569' : 'linear-gradient(135deg, #e11d48, #f43f5e)',
+          padding: '0.85rem', background: loading ? '#B98091' : 'linear-gradient(135deg, #B33B6B, #D06B32)',
           color: '#fff', fontWeight: '700', fontSize: '0.95rem', border: 'none', borderRadius: '10px',
           cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : '0 4px 18px rgba(225,29,72,0.35)'
         }}>
@@ -220,14 +233,14 @@ export default function UploadTest() {
 
       {/* ── Output Panel ── */}
       {(transcript || visitId) && (
-        <div style={{ marginTop: '2.25rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingTop: '1.75rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ marginTop: '2.25rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingTop: '1.75rem', borderTop: '1px solid var(--border-color)' }}>
 
           {/* Visit ID */}
           {visitId && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <ShieldCheck size={16} style={{ color: '#2dd4bf' }} />
-              <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Visit ID:</span>
-              <code style={{ fontSize: '0.78rem', color: '#38bdf8', background: '#0f172a', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>{visitId}</code>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Visit ID:</span>
+              <code style={{ fontSize: '0.78rem', color: 'var(--color-primary)', background: '#FCE7D9', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>{visitId}</code>
             </div>
           )}
 
@@ -238,7 +251,7 @@ export default function UploadTest() {
                 <CheckCircle size={18} />
                 <h3 style={{ fontSize: '0.925rem', fontWeight: '700', margin: 0 }}>Whisper Transcription</h3>
               </div>
-              <textarea readOnly rows={4} value={transcript} style={{ width: '100%', padding: '0.85rem', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', color: '#f8fafc', fontSize: '0.9rem', lineHeight: '1.5', resize: 'none', outline: 'none' }} />
+              <textarea readOnly rows={4} value={transcript} style={{ width: '100%', padding: '0.85rem', background: '#FFF8F2', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'var(--text-main)', fontSize: '0.9rem', lineHeight: '1.5', resize: 'none', outline: 'none' }} />
             </div>
           )}
 
@@ -266,14 +279,14 @@ export default function UploadTest() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                 {myths.map((m, i) => (
-                  <div key={m.id || i} style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(244,63,94,0.25)', borderRadius: '12px', padding: '1rem' }}>
+                  <div key={m.id || i} style={{ background: '#FFF9F5', border: '1px solid rgba(244,63,94,0.25)', borderRadius: '12px', padding: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
                       <AlertTriangle size={16} style={{ color: '#f43f5e' }} />
-                      <strong style={{ fontSize: '0.875rem', color: '#f8fafc' }}>{m.myth_title || 'Myth Detected'}</strong>
+                      <strong style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>{m.myth_title || 'Myth Detected'}</strong>
                       <span style={severityStyle(m.severity_impact)}>{m.severity_impact}</span>
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8', fontStyle: 'italic' }}>"{m.extracted_quote}"</p>
-                    <p style={{ margin: '0.45rem 0 0', fontSize: '0.82rem', color: '#cbd5e1', lineHeight: '1.45' }}>{m.explanation}</p>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>"{m.extracted_quote}"</p>
+                    <p style={{ margin: '0.45rem 0 0', fontSize: '0.82rem', color: 'var(--text-main)', lineHeight: '1.45' }}>{m.explanation}</p>
                   </div>
                 ))}
               </div>
@@ -293,15 +306,15 @@ export default function UploadTest() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {symptoms.map((s, i) => (
-                  <div key={s.id || i} style={{ background: 'rgba(15,23,42,0.5)', border: `1px solid ${s.severity === 'severe' ? 'rgba(239,68,68,0.3)' : 'rgba(251,191,36,0.25)'}`, borderRadius: '10px', padding: '0.9rem 1rem' }}>
+                  <div key={s.id || i} style={{ background: '#FFF9F5', border: `1px solid ${s.severity === 'severe' ? 'rgba(239,68,68,0.3)' : 'rgba(251,191,36,0.25)'}`, borderRadius: '10px', padding: '0.9rem 1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
-                      <strong style={{ fontSize: '0.875rem', color: '#f8fafc' }}>{s.symptom_name}</strong>
+                      <strong style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>{s.symptom_name}</strong>
                       <span style={severityStyle(s.severity)}>{s.severity}</span>
                       {s.requires_doctor_referral && (
                         <span style={{ fontSize: '0.7rem', color: '#f43f5e', fontWeight: '700', marginLeft: '0.25rem' }}>⚠ Refer to Doctor</span>
                       )}
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>{s.flag_description}</p>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>{s.flag_description}</p>
                     <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: '#2dd4bf' }}>→ {s.recommended_asha_action}</p>
                   </div>
                 ))}

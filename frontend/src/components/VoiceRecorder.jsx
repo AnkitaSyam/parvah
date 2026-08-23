@@ -140,10 +140,10 @@ export default function VoiceRecorder({ patients = [], selectedPatient, onAnalys
               onChange={(e) => setPatientId(e.target.value)}
               style={{
                 padding: '0.55rem 0.85rem',
-                background: 'rgba(15, 23, 42, 0.8)',
+                background: 'var(--input-bg)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--input-text)',
                 fontSize: '0.875rem',
                 fontWeight: '600'
               }}
@@ -242,10 +242,10 @@ export default function VoiceRecorder({ patients = [], selectedPatient, onAnalys
               style={{
                 width: '100%',
                 padding: '0.6rem',
-                background: 'rgba(15, 23, 42, 0.8)',
+                background: 'var(--input-bg)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--input-text)',
                 fontSize: '0.8rem',
                 marginBottom: '0.75rem'
               }}
@@ -264,10 +264,10 @@ export default function VoiceRecorder({ patients = [], selectedPatient, onAnalys
               style={{
                 width: '100%',
                 padding: '0.75rem',
-                background: 'rgba(15, 23, 42, 0.6)',
+                background: 'var(--input-bg)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--input-text)',
                 fontSize: '0.85rem',
                 resize: 'vertical'
               }}

@@ -8,14 +8,29 @@ const API_BASE_URL = '/api';
 async function getAuthHeaders() {
   try {
     const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token || 'demo-asha-token';
+    let token = session?.access_token;
+
+    if (session && session.expires_at) {
+      const now = Math.floor(Date.now() / 1000);
+      // If the token is within 10 seconds of expiring, refresh it
+      if (session.expires_at - now < 10) {
+        const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+        if (!refreshError && refreshedSession) {
+          token = refreshedSession.access_token;
+        }
+      }
+    }
+
+    if (!token) {
+      throw new Error('No active authentication session found.');
+    }
 
     return {
       'Authorization': `Bearer ${token}`
     };
   } catch (error) {
     console.error('Error getting auth session header:', error.message);
-    return { 'Authorization': 'Bearer demo-asha-token' };
+    throw error;
   }
 }
 

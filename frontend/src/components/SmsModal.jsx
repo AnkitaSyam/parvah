@@ -41,7 +41,7 @@ export default function SmsModal({ isOpen, onClose, alertData }) {
     <div style={{
       position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
-      background: 'rgba(15, 23, 42, 0.85)',
+      background: 'rgba(74, 29, 53, 0.58)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -100,7 +100,7 @@ export default function SmsModal({ isOpen, onClose, alertData }) {
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem 0.6rem 0.6rem 2.2rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff', fontSize: '0.9rem' }}
+                  style={{ width: '100%', padding: '0.6rem 0.6rem 0.6rem 2.2rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)', fontSize: '0.9rem' }}
                 />
               </div>
             </div>
@@ -114,7 +114,7 @@ export default function SmsModal({ isOpen, onClose, alertData }) {
                 required
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                style={{ width: '100%', padding: '0.65rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: '#fff', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '0.65rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)', fontSize: '0.85rem' }}
               />
             </div>
 

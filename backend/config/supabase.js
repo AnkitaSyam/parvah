@@ -33,6 +33,7 @@ export const createUserClient = (token) => {
     throw new Error('Authentication token required to create user-bound Supabase client.');
   }
 
+
   const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
   return createClient(

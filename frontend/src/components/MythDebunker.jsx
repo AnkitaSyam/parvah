@@ -103,7 +103,7 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
               {/* Grid Comparison: Myth vs Medical Fact */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                 
-                <div style={{ background: 'rgba(15, 23, 42, 0.03)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-danger)' }}>
+                <div style={{ background: '#FFF3F0', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-danger)' }}>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-danger)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <AlertCircle size={16} />
                     <span>Common Rural Myth</span>
@@ -113,7 +113,7 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
                   </p>
                 </div>
 
-                <div style={{ background: 'rgba(15, 23, 42, 0.03)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-secondary)' }}>
+                <div style={{ background: '#FFF5E9', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--color-secondary)' }}>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-secondary)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <Shield size={16} />
                     <span>Verified Medical Fact</span>

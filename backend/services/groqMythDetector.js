@@ -1,14 +1,33 @@
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
+import { retrieveRelevantMyths } from './mythRetrieval.js';
 
 dotenv.config();
 
+// Below this cosine similarity, we don't trust a myth as "detected" on its
+// own -- it's still useful as LLM grounding context, but not strong enough
+// evidence to report to the ASHA worker without the LLM's confirmation.
+const SEMANTIC_FALLBACK_CONFIDENCE = 0.55;
+
 /**
- * Single-purpose function: Analyzes visit transcript against fixed pregnancy myth catalog.
- * Uses Groq LLM with strict JSON schema validation & 1-time retry on malformed JSON.
+ * Single-purpose function: Analyzes visit transcript against the pregnancy
+ * myth catalog and returns any myths mentioned by the patient or family.
+ *
+ * Flow:
+ *  1. Semantically retrieve the myths most relevant to this transcript
+ *     (pgvector cosine similarity) to use as focused LLM grounding context,
+ *     instead of dumping the entire catalog into every prompt.
+ *  2. Ask the LLM to confirm which of those (or others) are actually
+ *     mentioned, with quotes and severity.
+ *  3. If the LLM is unavailable/broken, fall back to the semantic
+ *     retrieval results directly (myths above a confidence threshold),
+ *     rather than a hardcoded keyword list -- this scales automatically
+ *     as the myth catalog grows, with no code changes required.
  *
  * @param {string} transcript - Transcribed visit text
- * @param {Array<Object>} referenceMyths - List of fixed reference myths from Supabase DB
+ * @param {Array<Object>} [referenceMyths] - Full myth catalog from Supabase
+ *   (legacy param, used only as a last-resort context source if semantic
+ *   retrieval itself fails, e.g. embeddings not yet backfilled).
  * @returns {Promise<Array<Object>>} Array of detected myth matches with counseling advice
  */
 export async function detectMyths(transcript, referenceMyths = []) {
@@ -16,22 +35,42 @@ export async function detectMyths(transcript, referenceMyths = []) {
     throw new Error('detectMyths error: Valid transcript string is required.');
   }
 
+  // Step 1: semantic retrieval for grounding + fallback use.
+  let retrievedMyths = [];
+  let retrievalFailed = false;
+  try {
+    retrievedMyths = await retrieveRelevantMyths(transcript);
+  } catch (retrievalError) {
+    retrievalFailed = true;
+    console.warn(`Semantic myth retrieval unavailable (${retrievalError.message}). ` +
+      'Falling back to full myth catalog for LLM context. ' +
+      'Have you run migration 004 and `npm run embed:myths`?');
+  }
+
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey || apiKey.includes('your_groq_api_key')) {
-    console.warn('⚠️ GROQ_API_KEY missing. Returning offline myth analysis based on pattern matching.');
-    return fallbackMythDetection(transcript, referenceMyths);
+    console.warn('GROQ_API_KEY missing. Returning offline myth analysis from semantic retrieval.');
+    return semanticFallbackDetection(retrievedMyths, referenceMyths, retrievalFailed);
   }
 
   const groq = new Groq({ apiKey });
 
-  const formattedReference = referenceMyths.map(m => `- ID: "${m.id}", Title: "${m.myth_title}", Myth: "${m.common_myth}"`).join('\n');
+  // Prefer the focused, semantically-relevant myth list; fall back to the
+  // full catalog only if retrieval itself isn't set up yet.
+  const contextMyths = retrievedMyths.length > 0
+    ? retrievedMyths
+    : referenceMyths;
+
+  const formattedReference = contextMyths
+    .map(m => `- ID: "${m.external_id || m.id}", Title: "${m.myth_title}", Myth: "${m.common_myth}"`)
+    .join('\n');
 
   const systemPrompt = `You are a medical maternal health analyst for rural India.
 Your task is to analyze an ASHA worker's visit transcript and identify any pregnancy myths or harmful superstitions mentioned by the patient or family.
 
 Reference Pregnancy Myths Database:
-${formattedReference || 'No external database provided; match against standard rural Indian pregnancy myths (e.g. eclipse exposure, iron tablets making baby dark, eating less to keep baby small, saffron milk for skin color, ghee for lubrication, avoiding curd/cold water).'}
+${formattedReference || 'No external database provided; match against standard rural Indian pregnancy myths (e.g. eclipse exposure, iron tablets making baby dark, eating less to keep baby small, saffron milk for skin color, ghee for lubrication, avoiding curd/cold water, avoiding papaya).'}
 
 CRITICAL INSTRUCTIONS:
 1. ONLY detect myths that are explicitly mentioned or referenced in the transcript.
@@ -57,7 +96,7 @@ CRITICAL INSTRUCTIONS:
     const parsed = parseAndValidateMythJson(rawResponse);
     return parsed.detected_myths;
   } catch (firstError) {
-    console.warn(`⚠️ First LLM myth detection attempt failed or returned malformed JSON: ${firstError.message}. Retrying once...`);
+    console.warn(`First LLM myth detection attempt failed or returned malformed JSON: ${firstError.message}. Retrying once...`);
 
     // Retry Attempt with explicit JSON instruction
     try {
@@ -66,8 +105,8 @@ CRITICAL INSTRUCTIONS:
       const parsedRetry = parseAndValidateMythJson(retryRawResponse);
       return parsedRetry.detected_myths;
     } catch (retryError) {
-      console.error('❌ Retry for detectMyths also failed:', retryError.message);
-      throw new Error(`Myth Detection LLM failed after 1 retry: ${retryError.message}`);
+      console.warn('LLM retry for detectMyths also failed. Falling back to semantic myth retrieval:', retryError.message);
+      return semanticFallbackDetection(retrievedMyths, referenceMyths, retrievalFailed);
     }
   }
 }
@@ -82,7 +121,7 @@ async function callGroqLlm(groq, systemPrompt, userPrompt) {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-20b',
       temperature: 0.1,
       response_format: { type: 'json_object' }
     });
@@ -132,54 +171,39 @@ function parseAndValidateMythJson(rawText) {
 }
 
 /**
- * Fallback pattern-based myth detection when offline or missing API key
+ * Offline/degraded-mode myth detection, used when the LLM is unavailable.
+ *
+ * Reports myths that semantic retrieval already found to be closely
+ * related to the transcript (cosine similarity above
+ * SEMANTIC_FALLBACK_CONFIDENCE). This scales with the myth catalog
+ * automatically -- no hardcoded keyword list to maintain, so newly seeded
+ * myths (like papaya) are covered without a code change.
+ *
+ * If semantic retrieval itself isn't available yet (migration not run /
+ * embeddings not backfilled), this returns an empty list rather than
+ * silently guessing -- that's a more honest failure mode than a stale
+ * keyword list that quietly misses things.
  */
-function fallbackMythDetection(transcript, referenceMyths) {
-  const detected = [];
-  const text = transcript.toLowerCase();
-
-  if (text.includes('सूर्यग्रहण') || text.includes('eclipse')) {
-    const ref = referenceMyths.find(m => m.myth_title.includes('Eclipse')) || {};
-    detected.push({
-      myth_id: ref.id || null,
-      myth_title: 'Eclipse Exposure Superstition',
-      extracted_quote: 'सूर्यग्रहण के दौरान बाहर निकलने से बच्चे पर दाग पड़ता है',
-      explanation: 'Eclipses do not harm unborn babies. Counsel family to allow normal daily activity and focus on IFA supplementation.',
-      severity_impact: 'medium'
-    });
+function semanticFallbackDetection(retrievedMyths, referenceMyths, retrievalFailed) {
+  if (retrievalFailed) {
+    console.warn('Semantic fallback unavailable (retrieval failed). Returning no detected myths for this visit -- ' +
+      'set up pgvector (migration 004) and run `npm run embed:myths` to enable offline myth detection.');
+    return [];
   }
 
-  if (text.includes('लोहे की गोली') || text.includes('आयरन') || text.includes('ifa') || text.includes('dark')) {
-    const ref = referenceMyths.find(m => m.myth_title.includes('Iron')) || {};
-    detected.push({
-      myth_id: ref.id || null,
-      myth_title: 'Iron Tablets Cause Dark Skin Color',
-      extracted_quote: 'लोहे की गोली से बच्चे का रंग काला हो जाता है',
-      explanation: 'IFA tablets prevent life-threatening maternal anemia and do not affect baby skin tone. Advise taking 1 tablet daily with water.',
-      severity_impact: 'high'
-    });
+  const confident = retrievedMyths.filter(m => m.similarity >= SEMANTIC_FALLBACK_CONFIDENCE);
+
+  if (confident.length === 0) {
+    return [];
   }
 
-  if (text.includes('घी') || text.includes('ghee')) {
-    const ref = referenceMyths.find(m => m.myth_title.includes('Ghee')) || {};
-    detected.push({
-      myth_id: ref.id || null,
-      myth_title: 'Excess Ghee Lubricates Delivery',
-      extracted_quote: '9वें महीने में बहुत ज्यादा देसी घी पिला रहे हैं',
-      explanation: 'Ghee enters the digestive system, not the birth canal. Excess fat causes severe diarrhea and digestion issues.',
-      severity_impact: 'medium'
-    });
-  }
-
-  if (text.includes('कम खाना') || text.includes('eat less')) {
-    detected.push({
-      myth_id: null,
-      myth_title: 'Eating Less Keeps Baby Small',
-      extracted_quote: 'eat very less food in the first trimester so the baby stays small',
-      explanation: 'Restricting diet leads to severe low birth weight and anemia. Mother needs extra nutrition for fetal brain growth.',
-      severity_impact: 'high'
-    });
-  }
-
-  return detected;
+  return confident.map(m => ({
+    myth_id: m.external_id || m.id || null,
+    myth_title: m.myth_title,
+    extracted_quote: '(offline mode -- see full transcript; semantic match, no exact quote extracted)',
+    explanation: m.medical_fact || m.counseling_guidance || 'This belief is not supported by medical evidence.',
+    severity_impact: m.similarity >= 0.7 ? 'high' : 'medium',
+    _mode: 'semantic_fallback',
+    _similarity: m.similarity
+  }));
 }

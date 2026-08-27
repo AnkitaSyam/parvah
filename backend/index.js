@@ -10,6 +10,8 @@ import patientRoutes from './routes/patientRoutes.js';
 import visitRoutes from './routes/visitRoutes.js';
 import mythRoutes from './routes/mythRoutes.js';
 import smsRoutes from './routes/smsRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
+
 
 dotenv.config();
 
@@ -54,6 +56,7 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/myths', mythRoutes);
 app.use('/api/sms', smsRoutes);
+app.use('/api/profile', profileRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Unhandled Backend Exception:', err.stack);

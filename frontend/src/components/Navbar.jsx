@@ -73,13 +73,6 @@ export default function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLo
             <span>Myth DB</span>
           </button>
 
-          <button
-            className={`nav-pill ${activeTab === 'pipeline' ? 'active' : ''}`}
-            onClick={() => setActiveTab('pipeline')}
-          >
-            <AudioLines size={16} />
-            <span>Audio Pipeline Test</span>
-          </button>
         </nav>
 
         {/* User Auth Info & RLS Indicator */}

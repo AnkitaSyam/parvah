@@ -8,7 +8,6 @@ import MythDebunker from './components/MythDebunker';
 import MythCatalog from './components/MythCatalog';
 import AuthModal from './components/AuthModal';
 import SmsModal from './components/SmsModal';
-import UploadTest from './pages/UploadTest';
 import { supabase } from './lib/supabase';
 import { api } from './lib/api';
 
@@ -18,10 +17,14 @@ export default function App() {
   const [loadingSession, setLoadingSession] = useState(true);
 
   const [patients, setPatients] = useState([]);
+  const [isDemo, setIsDemo] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [patientTimeline, setPatientTimeline] = useState([]);
   const [patientVisits, setPatientVisits] = useState([]);
   const [detectedMyths, setDetectedMyths] = useState([]);
+  const [fullName, setFullName] = useState('');
+  const [allVisits, setAllVisits] = useState([]);
+  const [mythsAddressedCount, setMythsAddressedCount] = useState(0);
 
   // Modals
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -51,21 +54,69 @@ export default function App() {
     if (!user) {
       setPatients([]);
       setSelectedPatient(null);
+      setIsDemo(false);
       return;
     }
     async function loadPatients() {
       try {
         const data = await api.getPatients();
+        setIsDemo(false);
         if (data && data.length > 0) {
           setPatients(data);
           setSelectedPatient(data[0]);
+        } else {
+          setPatients([]);
+          setSelectedPatient(null);
         }
       } catch (err) {
         console.warn('Backend API patient fetch fallback:', err.message);
+        setIsDemo(true);
       }
     }
     loadPatients();
-  }, [user]);
+  }, [user, activeTab]);
+
+  // Fetch dashboard and profile details
+  useEffect(() => {
+    if (!user) {
+      setFullName('');
+      setAllVisits([]);
+      setMythsAddressedCount(0);
+      return;
+    }
+
+    async function loadDashboardData() {
+      try {
+        const profile = await api.getProfile();
+        if (profile && profile.full_name) {
+          setFullName(profile.full_name);
+        } else {
+          setFullName(user.email.split('@')[0] || 'ASHA Worker');
+        }
+      } catch (err) {
+        console.warn('Failed to load profile, using fallback:', err.message);
+        setFullName(user.email.split('@')[0] || 'ASHA Worker');
+      }
+
+      try {
+        const visitsData = await api.getAllVisits();
+        if (visitsData) setAllVisits(visitsData);
+      } catch (err) {
+        console.warn('Failed to load all visits:', err.message);
+      }
+
+      try {
+        const mythsData = await api.getDetectedMyths();
+        if (mythsData) setMythsAddressedCount(mythsData.length);
+      } catch (err) {
+        console.warn('Failed to load detected myths:', err.message);
+      }
+    }
+
+    if (activeTab === 'dashboard') {
+      loadDashboardData();
+    }
+  }, [user, activeTab]);
 
   // Load timeline & visits when selectedPatient changes
   useEffect(() => {
@@ -174,8 +225,11 @@ export default function App() {
       <main>
         {activeTab === 'dashboard' && (
           <Dashboard
+            fullName={fullName}
             patients={patients}
-            visits={patientVisits}
+            visits={allVisits}
+            mythsAddressed={mythsAddressedCount}
+            isDemo={isDemo}
             setActiveTab={setActiveTab}
             setSelectedPatient={(p) => {
               setSelectedPatient(p);
@@ -188,6 +242,7 @@ export default function App() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <PatientList
               patients={patients}
+              isDemo={isDemo}
               onAddPatient={handleAddPatient}
               onSelectPatient={(p) => setSelectedPatient(p)}
             />
@@ -211,17 +266,15 @@ export default function App() {
         {activeTab === 'recorder' && (
           <VoiceRecorder
             patients={patients}
+            isDemo={isDemo}
             selectedPatient={selectedPatient}
             onAnalysisComplete={handleAnalysisComplete}
+            setActiveTab={setActiveTab}
           />
         )}
 
         {activeTab === 'myths' && (
           <MythCatalog />
-        )}
-
-        {activeTab === 'pipeline' && (
-          <UploadTest />
         )}
       </main>
 

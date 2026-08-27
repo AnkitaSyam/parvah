@@ -197,5 +197,47 @@ export const api = {
       console.error('api.sendSmsAlert error:', err.message);
       throw err;
     }
+  },
+
+  // Profile API
+  getProfile: async () => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE_URL}/profile`, { headers });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch profile');
+      return json.data;
+    } catch (err) {
+      console.error('api.getProfile error:', err.message);
+      throw err;
+    }
+  },
+
+  // All visits for current worker
+  getAllVisits: async () => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE_URL}/visits`, { headers });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch visits');
+      return json.data;
+    } catch (err) {
+      console.error('api.getAllVisits error:', err.message);
+      throw err;
+    }
+  },
+
+  // All detected myths for current worker
+  getDetectedMyths: async () => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE_URL}/myths/detected`, { headers });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch detected myths');
+      return json.data;
+    } catch (err) {
+      console.error('api.getDetectedMyths error:', err.message);
+      throw err;
+    }
   }
 };

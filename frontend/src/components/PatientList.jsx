@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, User, Calendar, MapPin, Phone, Heart, Activity, ChevronRight, X } from 'lucide-react';
 
-export default function PatientList({ patients = [], onAddPatient, onSelectPatient }) {
+export default function PatientList({ patients = [], isDemo = false, onAddPatient, onSelectPatient }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -13,7 +13,7 @@ export default function PatientList({ patients = [], onAddPatient, onSelectPatie
   const [contactPhone, setContactPhone] = useState('');
   const [bloodGroup, setBloodGroup] = useState('B+');
 
-  const displayList = patients.length > 0 ? patients : samplePatients;
+  const displayList = isDemo ? samplePatients : patients;
 
   const filteredPatients = displayList.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

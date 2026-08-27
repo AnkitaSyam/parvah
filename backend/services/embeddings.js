@@ -10,7 +10,12 @@
  * override with process.env.TRANSFORMERS_CACHE).
  */
 
-import { pipeline } from '@xenova/transformers';
+export class EmbeddingUnavailableError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'EmbeddingUnavailableError';
+  }
+}
 
 const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2';
 export const EMBEDDING_DIMENSIONS = 384;
@@ -18,10 +23,31 @@ export const EMBEDDING_DIMENSIONS = 384;
 // Lazy-loaded singleton so the model is only downloaded/initialized once
 // per process, not once per request.
 let extractorPromise = null;
+let embeddingsUnavailable = false;
+let loadError = null;
 
-function getExtractor() {
+/**
+ * Lazy extractor promise resolver.
+ * NOTE: This lazy-load dynamic import pattern is intentional and required. 
+ * The top-level static import of @xenova/transformers was removed specifically 
+ * because failure to load its native binary dependencies (e.g. sharp or 
+ * onnxruntime) crashed the entire Express process at boot time. Moving it here 
+ * allows the server to boot successfully and degrade gracefully.
+ */
+async function getExtractor() {
+  if (embeddingsUnavailable) {
+    throw new EmbeddingUnavailableError(`Embedding model is unavailable. Initial load failed: ${loadError?.message}`);
+  }
   if (!extractorPromise) {
-    extractorPromise = pipeline('feature-extraction', MODEL_NAME);
+    try {
+      const transformers = await import('@xenova/transformers');
+      extractorPromise = await transformers.pipeline('feature-extraction', MODEL_NAME);
+    } catch (err) {
+      embeddingsUnavailable = true;
+      loadError = err;
+      console.warn('⚠️ Failed to dynamically load @xenova/transformers or initialize pipeline:', err.message);
+      throw new EmbeddingUnavailableError(`Failed to initialize embedding pipeline: ${err.message}`);
+    }
   }
   return extractorPromise;
 }
@@ -38,11 +64,17 @@ export async function embedText(text) {
     throw new Error('embedText error: non-empty string is required.');
   }
 
-  const extractor = await getExtractor();
-  const output = await extractor(text, { pooling: 'mean', normalize: true });
-
-  // output.data is a Float32Array; pgvector/JS client wants a plain array.
-  return Array.from(output.data);
+  try {
+    const extractor = await getExtractor();
+    const output = await extractor(text, { pooling: 'mean', normalize: true });
+    // output.data is a Float32Array; pgvector/JS client wants a plain array.
+    return Array.from(output.data);
+  } catch (err) {
+    if (err instanceof EmbeddingUnavailableError || embeddingsUnavailable) {
+      throw new EmbeddingUnavailableError(err.message);
+    }
+    throw err;
+  }
 }
 
 /**

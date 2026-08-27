@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Shield, Mail, Lock, UserCheck, AlertCircle } from 'lucide-react';
+import { Shield, Mail, Lock, UserCheck, AlertCircle, User, Phone, Calendar } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [age, setAge] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -18,21 +21,110 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
     try {
       if (isSignUp) {
+        // Validate age range
+        const parsedAge = parseInt(age, 10);
+        if (isNaN(parsedAge) || parsedAge < 18 || parsedAge > 70) {
+          throw new Error('Age must be a number between 18 and 70.');
+        }
+
         const { data, error } = await supabase.auth.signUp({
           email,
-          password
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+              phone_number: phoneNumber,
+              age: parsedAge
+            }
+          }
         });
         if (error) throw error;
+
+        // If there's an immediate session, insert profile
+        if (data.user && data.session) {
+          try {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                full_name: fullName,
+                phone_number: phoneNumber,
+                age: parsedAge
+              });
+            if (profileError) {
+              console.warn('Profile creation with age failed:', profileError.message);
+              if (profileError.code === '42703' || profileError.code === 'PGRST204') { // Column does not exist
+                const { error: retryError } = await supabase
+                  .from('profiles')
+                  .insert({
+                    id: data.user.id,
+                    full_name: fullName,
+                    phone_number: phoneNumber
+                  });
+                if (retryError) {
+                  console.warn('Profile creation retry without age failed:', retryError.message);
+                }
+              }
+            }
+          } catch (profileErr) {
+            console.warn('Profile creation exception during signup:', profileErr.message);
+          }
+        }
+
         onAuthSuccess(data.user);
-        onClose();
+        if (onClose) onClose();
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
         if (error) throw error;
+
+        if (data.user) {
+          try {
+            const { data: profile, error: fetchError } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('id', data.user.id)
+              .maybeSingle();
+
+            if (!profile && !fetchError) {
+              const metadata = data.user.user_metadata || {};
+              const fallbackName = metadata.full_name || data.user.email.split('@')[0] || 'ASHA Worker';
+              const parsedAge = metadata.age ? parseInt(metadata.age, 10) : null;
+
+              const { error: insertError } = await supabase
+                .from('profiles')
+                .insert({
+                  id: data.user.id,
+                  full_name: fallbackName,
+                  phone_number: metadata.phone_number || phoneNumber || '',
+                  age: parsedAge
+                });
+
+              if (insertError) {
+                console.warn('Deferred profile backfill with age failed:', insertError.message);
+                if (insertError.code === '42703' || insertError.code === 'PGRST204') {
+                  const { error: retryError } = await supabase
+                    .from('profiles')
+                    .insert({
+                      id: data.user.id,
+                      full_name: fallbackName,
+                      phone_number: metadata.phone_number || phoneNumber || ''
+                    });
+                  if (retryError) {
+                    console.warn('Deferred profile backfill retry without age failed:', retryError.message);
+                  }
+                }
+              }
+            }
+          } catch (profileErr) {
+            console.warn('Deferred profile backfill exception:', profileErr.message);
+          }
+        }
+
         onAuthSuccess(data.user);
-        onClose();
+        if (onClose) onClose();
       }
     } catch (err) {
       console.error('Auth error:', err.message);
@@ -51,8 +143,52 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         password: 'TestPassword123!'
       });
       if (error) throw error;
+
+      if (data.user) {
+        try {
+          const { data: profile, error: fetchError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', data.user.id)
+            .maybeSingle();
+
+          if (!profile && !fetchError) {
+            const metadata = data.user.user_metadata || {};
+            const fallbackName = metadata.full_name || data.user.email.split('@')[0] || 'ASHA Worker';
+            const parsedAge = metadata.age ? parseInt(metadata.age, 10) : null;
+
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                full_name: fallbackName,
+                phone_number: metadata.phone_number || '',
+                age: parsedAge
+              });
+
+            if (insertError) {
+              console.warn('Demo profile backfill with age failed:', insertError.message);
+              if (insertError.code === '42703' || insertError.code === 'PGRST204') {
+                const { error: retryError } = await supabase
+                  .from('profiles')
+                  .insert({
+                    id: data.user.id,
+                    full_name: fallbackName,
+                    phone_number: metadata.phone_number || ''
+                  });
+                if (retryError) {
+                  console.warn('Demo profile backfill retry without age failed:', retryError.message);
+                }
+              }
+            }
+          }
+        } catch (profileErr) {
+          console.warn('Demo profile backfill exception:', profileErr.message);
+        }
+      }
+
       onAuthSuccess(data.user);
-      onClose();
+      if (onClose) onClose();
     } catch (err) {
       setErrorMsg('Demo login failed: ' + err.message);
     } finally {
@@ -145,6 +281,86 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         )}
 
         <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {isSignUp && (
+            <>
+              <div>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
+                  Full Name
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <User size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Anita Devi"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem 0.65rem 2.4rem',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--input-text)',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
+                  Phone Number
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Phone size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="tel"
+                    required
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="+919876543210"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem 0.65rem 2.4rem',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--input-text)',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
+                  Age
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Calendar size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="number"
+                    required
+                    min="18"
+                    max="70"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    placeholder="30"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem 0.65rem 2.4rem',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--input-text)',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div>
             <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
               Email Address

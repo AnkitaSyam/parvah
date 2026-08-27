@@ -236,6 +236,37 @@ router.post('/:id/process', async (req, res) => {
 });
 
 /**
+ * GET /api/visits
+ * Retrieves all visits for the authenticated ASHA worker
+ */
+router.get('/', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Authorization header missing.' });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const userClient = createUserClient(token);
+
+    const { data: visits, error } = await userClient
+      .from('visits')
+      .select('*, patients(name, gestational_weeks, risk_level), risk_timeline(*)')
+      .order('visit_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching all visits:', error.message);
+      return res.status(400).json({ error: `Failed to retrieve visits: ${error.message}` });
+    }
+
+    return res.json({ success: true, data: visits });
+  } catch (err) {
+    console.error('Server error in GET /api/visits:', err.message);
+    return res.status(500).json({ error: `Server error: ${err.message}` });
+  }
+});
+
+/**
  * GET /api/visits/patient/:patientId
  * Retrieves visit history for a specific patient
  */

@@ -64,7 +64,7 @@ export const api = {
       if (!res.ok) throw new Error(json.error || 'Failed to create patient');
       return json.data;
     } catch (err) {
-      console.error('api.createPatient error:', err.message);
+      console.error('api.createPatient error:', err);
       throw err;
     }
   },

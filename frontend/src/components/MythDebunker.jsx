@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, CheckCircle, AlertCircle, MessageCircle, Sparkles, Shield, ChevronRight } from 'lucide-react';
 
-export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
+export default function MythDebunker({ detectedMyths = [], onAddressMyth, isDemo = false }) {
   const defaultDetected = [
     {
       id: 'dm-1',
@@ -23,7 +23,7 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
     }
   ];
 
-  const mythsList = detectedMyths.length > 0 ? detectedMyths : defaultDetected;
+  const mythsList = detectedMyths.length > 0 ? detectedMyths : (isDemo ? defaultDetected : []);
   const [addressedMap, setAddressedMap] = useState({});
 
   const toggleAddress = (id) => {
@@ -55,11 +55,25 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
 
       {/* Myth Cards Grid */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        {mythsList.map((m, idx) => {
-          const mythId = m.id || `m-${idx}`;
-          const isAddressed = addressedMap[mythId] || m.is_addressed;
+        {mythsList.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '2.5rem 1.25rem',
+            border: '2px dashed var(--border-color)',
+            borderRadius: 'var(--radius-sm)',
+            color: 'var(--text-muted)',
+            background: 'rgba(255, 255, 255, 0.02)'
+          }}>
+            <BookOpen size={36} style={{ color: 'rgba(139, 92, 246, 0.2)', marginBottom: '0.75rem', strokeWidth: 1.5 }} />
+            <p style={{ fontSize: '0.9rem', fontWeight: '700', margin: 0, color: 'var(--text-main)' }}>No myths detected yet</p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>Record a field visit to begin myth detection analysis.</p>
+          </div>
+        ) : (
+          mythsList.map((m, idx) => {
+            const mythId = m.id || `m-${idx}`;
+            const isAddressed = addressedMap[mythId] || m.is_addressed;
 
-          return (
+            return (
             <div
               key={mythId}
               className="glass-card"
@@ -143,7 +157,7 @@ export default function MythDebunker({ detectedMyths = [], onAddressMyth }) {
 
             </div>
           );
-        })}
+        }))}
       </div>
 
     </div>

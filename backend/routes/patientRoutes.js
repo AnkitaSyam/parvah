@@ -66,7 +66,6 @@ router.post('/', async (req, res) => {
         {
           asha_worker_id: user.id,
           name,
-          age: parseInt(age, 10),
           gestational_weeks: parseInt(gestational_weeks || 12, 10),
           gravida: parseInt(gravida || 1, 10),
           para: parseInt(para || 0, 10),
@@ -80,7 +79,7 @@ router.post('/', async (req, res) => {
       .single();
 
     if (insertError) {
-      console.error('Error inserting patient:', insertError.message);
+      console.error('Error inserting patient:', JSON.stringify(insertError, null, 2));
       return res.status(400).json({ error: `Failed to create patient record: ${insertError.message}` });
     }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Activity, AlertTriangle, Calendar, Phone, Send, ShieldAlert, Check, Clock, Stethoscope, ChevronRight } from 'lucide-react';
 
-export default function RiskTimelineView({ patient, timelineEntries = [], onTriggerSms }) {
+export default function RiskTimelineView({ patient, timelineEntries = [], onTriggerSms, isDemo = false }) {
   const currentWeek = patient?.gestational_weeks || 26;
   const patientName = patient?.name || 'Rekha Devi';
 
@@ -52,7 +52,7 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
     }
   ];
 
-  const entriesToDisplay = timelineEntries.length > 0 ? timelineEntries : defaultTimeline;
+  const entriesToDisplay = timelineEntries.length > 0 ? timelineEntries : (isDemo ? defaultTimeline : []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -126,75 +126,90 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
         </h3>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {entriesToDisplay.map((item, idx) => {
-            const isSevere = item.severity === 'severe';
+          {entriesToDisplay.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '2.5rem 1.25rem',
+              border: '2px dashed var(--border-color)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--text-muted)',
+              background: 'rgba(255, 255, 255, 0.02)'
+            }}>
+              <Clock size={36} style={{ color: 'rgba(59, 95, 224, 0.2)', marginBottom: '0.75rem', strokeWidth: 1.5 }} />
+              <p style={{ fontSize: '0.9rem', fontWeight: '700', margin: 0, color: 'var(--text-main)' }}>No visits recorded yet</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>Record a field visit to begin tracking symptoms.</p>
+            </div>
+          ) : (
+            entriesToDisplay.map((item, idx) => {
+              const isSevere = item.severity === 'severe';
 
-            return (
-              <div key={item.id || idx} className="timeline-item">
-                <div className={`timeline-dot ${isSevere ? 'severe' : ''}`} />
-                
-                <div className="glass-card" style={{
-                  padding: '1.25rem',
-                  border: isSevere ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid var(--border-color)',
-                  background: isSevere ? 'rgba(239, 68, 68, 0.05)' : '#FFFDF9'
-                }}>
+              return (
+                <div key={item.id || idx} className="timeline-item">
+                  <div className={`timeline-dot ${isSevere ? 'severe' : ''}`} />
                   
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <h4 style={{ fontSize: '1.05rem', fontWeight: '700' }}>{item.symptom_name}</h4>
-                        <span className={`badge badge-${item.severity}`}>
-                          {item.severity} Risk
+                  <div className="glass-card" style={{
+                    padding: '1.25rem',
+                    border: isSevere ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid var(--border-color)',
+                    background: isSevere ? 'rgba(239, 68, 68, 0.05)' : '#FFFDF9'
+                  }}>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <h4 style={{ fontSize: '1.05rem', fontWeight: '700' }}>{item.symptom_name}</h4>
+                          <span className={`badge badge-${item.severity}`}>
+                            {item.severity} Risk
+                          </span>
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          Logged on: {item.date_logged} • Gestational Week {item.gestational_week}
                         </span>
                       </div>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        Logged on: {item.date_logged} • Gestational Week {item.gestational_week}
-                      </span>
+
+                      {/* Twilio SMS Alert Trigger Button */}
+                      <button
+                        className={`btn ${isSevere ? 'btn-danger' : 'btn-outline'}`}
+                        style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+                        onClick={() => onTriggerSms({
+                          patientName,
+                          phone: patient?.contact_phone || '+919876543210',
+                          symptom: item.symptom_name,
+                          action: item.recommended_asha_action,
+                          id: item.id
+                        })}
+                      >
+                        <Send size={14} />
+                        <span>{item.sms_alert_sent ? 'SMS Alert Sent ✓' : 'Send Twilio SMS Alert'}</span>
+                      </button>
                     </div>
 
-                    {/* Twilio SMS Alert Trigger Button */}
-                    <button
-                      className={`btn ${isSevere ? 'btn-danger' : 'btn-outline'}`}
-                      style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
-                      onClick={() => onTriggerSms({
-                        patientName,
-                        phone: patient?.contact_phone || '+919876543210',
-                        symptom: item.symptom_name,
-                        action: item.recommended_asha_action,
-                        id: item.id
-                      })}
-                    >
-                      <Send size={14} />
-                      <span>{item.sms_alert_sent ? 'SMS Alert Sent ✓' : 'Send Twilio SMS Alert'}</span>
-                    </button>
-                  </div>
-
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: '0.75rem' }}>
-                    <strong>Observation Flag:</strong> {item.flag_description}
-                  </p>
-
-                  <div style={{
-                    background: '#FFF3EC',
-                    padding: '0.75rem 1rem',
-                    borderRadius: 'var(--radius-sm)',
-                    borderLeft: `4px solid ${isSevere ? '#f87171' : 'var(--color-secondary)'}`
-                  }}>
-                    <p style={{ fontSize: '0.825rem', color: 'var(--text-main)' }}>
-                      <strong style={{ color: isSevere ? '#f87171' : 'var(--color-secondary)' }}>Recommended ASHA Action:</strong> {item.recommended_asha_action}
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: '0.75rem' }}>
+                      <strong>Observation Flag:</strong> {item.flag_description}
                     </p>
-                  </div>
 
-                  {item.requires_doctor_referral && (
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.75rem', color: '#f87171', fontSize: '0.75rem', fontWeight: '600' }}>
-                      <AlertTriangle size={14} />
-                      <span>Urgent Primary Health Centre (PHC) Medical Referral Required</span>
+                    <div style={{
+                      background: '#FFF3EC',
+                      padding: '0.75rem 1rem',
+                      borderRadius: 'var(--radius-sm)',
+                      borderLeft: `4px solid ${isSevere ? '#f87171' : 'var(--color-secondary)'}`
+                    }}>
+                      <p style={{ fontSize: '0.825rem', color: 'var(--text-main)' }}>
+                        <strong style={{ color: isSevere ? '#f87171' : 'var(--color-secondary)' }}>Recommended ASHA Action:</strong> {item.recommended_asha_action}
+                      </p>
                     </div>
-                  )}
 
+                    {item.requires_doctor_referral && (
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.75rem', color: '#f87171', fontSize: '0.75rem', fontWeight: '600' }}>
+                        <AlertTriangle size={14} />
+                        <span>Urgent Primary Health Centre (PHC) Medical Referral Required</span>
+                      </div>
+                    )}
+
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
 

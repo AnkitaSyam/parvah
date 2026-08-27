@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, User, Calendar, MapPin, Phone, Heart, Activity, ChevronRight, X } from 'lucide-react';
+import { Search, Plus, User, Calendar, MapPin, Phone, Heart, Activity, ChevronRight, X, AlertCircle } from 'lucide-react';
 
 export default function PatientList({ patients = [], isDemo = false, onAddPatient, onSelectPatient }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,6 +13,10 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
   const [contactPhone, setContactPhone] = useState('');
   const [bloodGroup, setBloodGroup] = useState('B+');
 
+  // Submit & Error State
+  const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const displayList = isDemo ? samplePatients : patients;
 
   const filteredPatients = displayList.filter(p =>
@@ -20,22 +24,37 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
     (p.village && p.village.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !age) return;
 
-    onAddPatient({
-      name,
-      age: parseInt(age, 10),
-      gestational_weeks: parseInt(gestationalWeeks, 10),
-      village,
-      contact_phone: contactPhone,
-      blood_group: bloodGroup
-    });
+    setIsSubmitting(true);
+    setErrorMsg('');
 
-    setName('');
-    setAge('');
-    setShowAddModal(false);
+    try {
+      await onAddPatient({
+        name,
+        age: parseInt(age, 10),
+        gestational_weeks: parseInt(gestationalWeeks, 10),
+        village,
+        contact_phone: contactPhone,
+        blood_group: bloodGroup
+      });
+
+      // Clear all fields to their true defaults on success
+      setName('');
+      setAge('');
+      setGestationalWeeks(14);
+      setVillage('Rampur');
+      setContactPhone('');
+      setBloodGroup('B+');
+      setShowAddModal(false);
+    } catch (err) {
+      console.error('Patient creation error:', err);
+      setErrorMsg(err.message || 'Failed to create patient. Please check database configuration.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -71,7 +90,7 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
             />
           </div>
 
-          <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
+          <button className="btn btn-primary" onClick={() => { setErrorMsg(''); setShowAddModal(true); }}>
             <Plus size={18} />
             <span>Register New Patient</span>
           </button>
@@ -182,6 +201,24 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
               Assign to your ASHA worker profile with Supabase RLS security.
             </p>
 
+            {errorMsg && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#f87171',
+                padding: '0.65rem 0.85rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.8rem',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <div>
                 <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.25rem' }}>Full Name *</label>
@@ -259,8 +296,13 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem', width: '100%' }}>
-                Save & Assign Patient
+              <button 
+                type="submit" 
+                className="btn btn-primary" 
+                style={{ marginTop: '0.5rem', width: '100%', opacity: isSubmitting ? 0.7 : 1 }}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving & Assigning...' : 'Save & Assign Patient'}
               </button>
             </form>
           </div>

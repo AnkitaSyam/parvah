@@ -137,16 +137,9 @@ export default function App() {
   }, [selectedPatient]);
 
   const handleAddPatient = async (newPatientData) => {
-    try {
-      const created = await api.createPatient(newPatientData);
-      setPatients((prev) => [created, ...prev]);
-      setSelectedPatient(created);
-    } catch (err) {
-      console.warn('Patient creation fallback: adding locally', err.message);
-      const mockCreated = { id: 'p-' + Date.now(), ...newPatientData };
-      setPatients((prev) => [mockCreated, ...prev]);
-      setSelectedPatient(mockCreated);
-    }
+    const created = await api.createPatient(newPatientData);
+    setPatients((prev) => [created, ...prev]);
+    setSelectedPatient(created);
   };
 
   const handleAnalysisComplete = (analysisData) => {
@@ -254,9 +247,11 @@ export default function App() {
                   patient={selectedPatient}
                   timelineEntries={patientTimeline}
                   onTriggerSms={handleOpenSmsModal}
+                  isDemo={isDemo}
                 />
                 <MythDebunker
                   detectedMyths={detectedMyths}
+                  isDemo={isDemo}
                 />
               </div>
             )}

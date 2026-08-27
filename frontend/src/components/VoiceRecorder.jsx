@@ -35,6 +35,16 @@ export default function VoiceRecorder({
   const audioChunksRef = useRef([]);
   const timerRef = useRef(null);
 
+  const hasAudioSource = inputMethod === 'mic' ? !!audioBlob : !!audioFile;
+  const isButtonDisabled = isProcessing || !hasAudioSource;
+
+  const getButtonText = () => {
+    if (isProcessing) return `Running AI Pipeline (${currentStep})...`;
+    if (inputMethod === 'mic' && !audioBlob) return 'Run Groq AI Analysis (Record audio first)';
+    if (inputMethod === 'upload' && !audioFile) return 'Run Groq AI Analysis (Select audio file first)';
+    return 'Run Groq AI Analysis (Whisper + Myths + Symptoms)';
+  };
+
   useEffect(() => {
     if (selectedPatient) {
       setPatientId(selectedPatient.id);
@@ -418,12 +428,34 @@ export default function VoiceRecorder({
                 ) : (
                   <div>
                     <p style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-main)', marginBottom: '0.25rem' }}>Drag and drop, or click to browse</p>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>WebM, MP3, WAV, M4A, OGG</p>
                   </div>
                 )}
               </div>
             </div>
           )}
+
+          {/* Action button inside Left Card */}
+          <button
+            className="btn btn-secondary"
+            onClick={handleRunAiAnalysis}
+            disabled={isButtonDisabled}
+            style={{
+              width: '100%',
+              marginTop: '1.5rem',
+              padding: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            {isProcessing ? (
+              <RefreshCw size={18} className="spin" style={{ animation: 'spin 1s linear infinite' }} />
+            ) : (
+              <Sparkles size={18} />
+            )}
+            <span>{getButtonText()}</span>
+          </button>
         </div>
 
         {/* Right Side: Transcript / Preset Selection & Process Launcher */}
@@ -493,25 +525,6 @@ export default function VoiceRecorder({
               <span>{errorMessage}</span>
             </div>
           )}
-
-          <button
-            className="btn btn-secondary"
-            onClick={handleRunAiAnalysis}
-            disabled={isProcessing}
-            style={{ width: '100%', marginTop: '1rem', padding: '0.85rem' }}
-          >
-            {isProcessing ? (
-              <>
-                <RefreshCw size={18} className="spin" style={{ animation: 'spin 1s linear infinite' }} />
-                <span>Running AI Pipeline ({currentStep})...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles size={18} />
-                <span>Run Groq AI Analysis (Whisper + Myths + Symptoms)</span>
-              </>
-            )}
-          </button>
         </div>
 
       </div>

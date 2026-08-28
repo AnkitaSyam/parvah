@@ -82,6 +82,19 @@ export const api = {
     }
   },
 
+  getPatientMyths: async (patientId) => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE_URL}/patients/${patientId}/myths`, { headers });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch patient myths');
+      return json.data;
+    } catch (err) {
+      console.error('api.getPatientMyths error:', err.message);
+      throw err;
+    }
+  },
+
   /**
    * getPatientCalls — canonical method for fetching a patient's visit records.
    * Hits GET /api/patients/:id/calls, which queries the visits table with

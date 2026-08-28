@@ -23,6 +23,7 @@ export default function App() {
   const [patientVisits, setPatientVisits] = useState([]);
   const [detectedMyths, setDetectedMyths] = useState([]);
   const [fullName, setFullName] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
   const [allVisits, setAllVisits] = useState([]);
   const [mythsAddressedCount, setMythsAddressedCount] = useState(0);
 
@@ -80,6 +81,7 @@ export default function App() {
   useEffect(() => {
     if (!user) {
       setFullName('');
+      setUserProfile(null);
       setAllVisits([]);
       setMythsAddressedCount(0);
       return;
@@ -88,6 +90,7 @@ export default function App() {
     async function loadDashboardData() {
       try {
         const profile = await api.getProfile();
+        setUserProfile(profile);
         if (profile && profile.full_name) {
           setFullName(profile.full_name);
         } else {
@@ -113,9 +116,7 @@ export default function App() {
       }
     }
 
-    if (activeTab === 'dashboard') {
-      loadDashboardData();
-    }
+    loadDashboardData();
   }, [user, activeTab]);
 
   // Load timeline & visits when selectedPatient changes
@@ -128,6 +129,9 @@ export default function App() {
 
           const visits = await api.getPatientVisits(selectedPatient.id);
           if (visits) setPatientVisits(visits);
+
+          const myths = await api.getPatientMyths(selectedPatient.id);
+          if (myths) setDetectedMyths(myths);
         } catch (err) {
           console.warn('Patient timeline load warning:', err.message);
         }
@@ -236,6 +240,7 @@ export default function App() {
             <PatientList
               patients={patients}
               isDemo={isDemo}
+              userCity={userProfile?.city}
               onAddPatient={handleAddPatient}
               onSelectPatient={(p) => setSelectedPatient(p)}
             />

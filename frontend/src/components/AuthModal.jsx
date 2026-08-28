@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Shield, Mail, Lock, UserCheck, AlertCircle, User, Phone, Calendar } from 'lucide-react';
+import { Shield, Mail, Lock, UserCheck, AlertCircle, User, Phone, Calendar, MapPin, Building, Hash } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [email, setEmail] = useState('');
@@ -8,6 +8,9 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [age, setAge] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -27,6 +30,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           throw new Error('Age must be a number between 18 and 70.');
         }
 
+        // Validate PIN code
+        if (!/^\d{6}$/.test(pincode)) {
+          throw new Error('PIN Code must be exactly 6 digits.');
+        }
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -34,7 +42,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
             data: {
               full_name: fullName,
               phone_number: phoneNumber,
-              age: parsedAge
+              age: parsedAge,
+              city,
+              state,
+              pincode
             }
           }
         });
@@ -49,7 +60,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 id: data.user.id,
                 full_name: fullName,
                 phone_number: phoneNumber,
-                age: parsedAge
+                age: parsedAge,
+                city,
+                state,
+                pincode
               });
             if (profileError) {
               console.warn('Profile creation with age failed:', profileError.message);
@@ -99,7 +113,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                   id: data.user.id,
                   full_name: fallbackName,
                   phone_number: metadata.phone_number || phoneNumber || '',
-                  age: parsedAge
+                  age: parsedAge,
+                  city: metadata.city || city || '',
+                  state: metadata.state || state || '',
+                  pincode: metadata.pincode || pincode || ''
                 });
 
               if (insertError) {
@@ -163,7 +180,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 id: data.user.id,
                 full_name: fallbackName,
                 phone_number: metadata.phone_number || '',
-                age: parsedAge
+                age: parsedAge,
+                city: metadata.city || '',
+                state: metadata.state || '',
+                pincode: metadata.pincode || ''
               });
 
             if (insertError) {
@@ -209,9 +229,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 1000,
-      padding: '1rem'
+      padding: '1rem',
+      overflowY: 'auto'
     }}>
-      <div className="glass-card" style={{ maxWidth: '440px', width: '100%', padding: '2rem', position: 'relative' }}>
+      <div className="glass-card" style={{ maxWidth: '440px', width: '100%', padding: '2rem', position: 'relative', maxHeight: '90vh', overflowY: 'auto' }}>
         {onClose && (
           <button
             onClick={onClose}
@@ -285,7 +306,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
             <>
               <div>
                 <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
-                  Full Name
+                  Full Name <span style={{ color: 'var(--color-danger)' }}>*</span>
                 </label>
                 <div style={{ position: 'relative' }}>
                   <User size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -294,7 +315,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Anita Devi"
+                    placeholder="Enter full name"
                     style={{
                       width: '100%',
                       padding: '0.65rem 0.8rem 0.65rem 2.4rem',
@@ -310,7 +331,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
               <div>
                 <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
-                  Phone Number
+                  Phone Number <span style={{ color: 'var(--color-danger)' }}>*</span>
                 </label>
                 <div style={{ position: 'relative' }}>
                   <Phone size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -319,7 +340,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                     required
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="+919876543210"
+                    placeholder="Enter phone number"
                     style={{
                       width: '100%',
                       padding: '0.65rem 0.8rem 0.65rem 2.4rem',
@@ -335,7 +356,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
               <div>
                 <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
-                  Age
+                  Age <span style={{ color: 'var(--color-danger)' }}>*</span>
                 </label>
                 <div style={{ position: 'relative' }}>
                   <Calendar size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -346,7 +367,82 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                     max="70"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    placeholder="30"
+                    placeholder="Enter age"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem 0.65rem 2.4rem',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--input-text)',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
+                  City <span style={{ color: 'var(--color-danger)' }}>*</span>
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Building size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    required
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Enter city"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem 0.65rem 2.4rem',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--input-text)',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
+                  State <span style={{ color: 'var(--color-danger)' }}>*</span>
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <MapPin size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    required
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    placeholder="Enter state"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem 0.65rem 2.4rem',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--input-text)',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
+                  PIN Code <span style={{ color: 'var(--color-danger)' }}>*</span>
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Hash size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    required
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
+                    placeholder="Enter PIN code"
+                    maxLength={6}
                     style={{
                       width: '100%',
                       padding: '0.65rem 0.8rem 0.65rem 2.4rem',
@@ -363,7 +459,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           )}
           <div>
             <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
-              Email Address
+              Email Address <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
               <Mail size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -372,7 +468,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="asha.anita@parvah.health"
+                placeholder="Enter email address"
                 style={{
                   width: '100%',
                   padding: '0.65rem 0.8rem 0.65rem 2.4rem',
@@ -388,7 +484,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
           <div>
             <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem' }}>
-              Password
+              Password <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
               <Lock size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />

@@ -23,6 +23,7 @@ export default function VoiceRecorder({
   const [audioFile, setAudioFile] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [sampleTranscript, setSampleTranscript] = useState('');
+  const [isManuallyTyped, setIsManuallyTyped] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
   // Processing States
@@ -55,20 +56,6 @@ export default function VoiceRecorder({
     }
   }, [selectedPatient, patients, isDemo]);
 
-  const sampleTranscriptsList = [
-    {
-      label: 'Sample 1 (Hindi): High Risk Pre-eclampsia & Solar Eclipse Myth',
-      value: `नमस्ते दीदी। मरीज रेखा देवी, उम्र 24 वर्ष, गर्भावस्था का 26वां हफ्ता है। मरीज ने बताया कि पिछले 3 दिनों से उसके पैरों में काफी सूजन (swelling) है और सुबह उठने पर तेज सिरदर्द रहता है। उसकी सास का कहना है कि सूर्यग्रहण के दौरान बाहर निकलने से बच्चे पर दाग पड़ता है इसलिए उसे बाहर नहीं निकलने दिया। इसके अलावा, सास ने उसे फॉलिक एसिड और आयरन की गोलियां (IFA tablets) खाने से मना किया है क्योंकि उनका मानना है कि लोहे की गोली से बच्चे का रंग काला हो जाता है। मरीज ने थोड़ा धुंधला दिखने (blurred vision) की भी शिकायत की। बीपी की जांच की जरूरत है।`
-    },
-    {
-      label: 'Sample 2 (Hindi): High Ghee Myth & Upper Abdominal Pain',
-      value: `मरीज सुनीता शर्मा, 28 वर्ष, 32 हफ्ते की गर्भवती। मरीज का कहना है कि उसके पेट के ऊपरी हिस्से में तेज दर्द है और उसे बुखार महसूस हो रहा है। रिश्तेदार उसे 9वें महीने में बहुत ज्यादा देसी घी पिला रहे हैं ताकि डिलीवरी आसानी से हो जाए। उन्होंने कहा कि डॉक्टर के दिए आयरन सिरप को बंद कर दिया है। मरीज ने बच्चे की हलचल कम होने की बात भी कही।`
-    },
-    {
-      label: 'Sample 3 (English): Eating Less Myth & Routine Symptoms',
-      value: `ASHA visit log: Patient Sunita, age 22, 18 weeks pregnant. Patient reported mild nausea and tiredness. Her mother-in-law advised her to eat very less food in the first trimester so the baby stays small and delivery is easy. Also she was advised not to eat curd or drink cold water because it will give the fetus a severe cold. No high-risk warning symptoms present today, BP normal.`
-    }
-  ];
 
   // Tab switching clears any state left over from the other mode
   const handleTabChange = (mode) => {
@@ -182,6 +169,17 @@ export default function VoiceRecorder({
       const processRes = await api.processVisitAi(visitId, uploadRes.filePath, sampleTranscript);
 
       setCurrentStep('done');
+
+      // Populate Whisper transcript directly in the textarea, preserving custom notes
+      if (processRes.transcript) {
+        if (!isManuallyTyped || !sampleTranscript.trim()) {
+          setSampleTranscript(processRes.transcript);
+        } else {
+          setSampleTranscript(prev => `${prev.trim()}\n\n[AI Transcription]:\n${processRes.transcript}`);
+        }
+        setIsManuallyTyped(false); // Reset to false after auto-populating or appending
+      }
+
       setAnalysisResult({
         id: visitId,
         transcript: processRes.transcript,
@@ -464,37 +462,21 @@ export default function VoiceRecorder({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
               <FileText size={20} color="var(--color-secondary)" />
-              <h3 style={{ fontSize: '1.1rem', fontWeight: '700' }}>Visit Transcript / Preset Selector</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700' }}>Patient Visit Notes / Transcript</h3>
             </div>
 
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-              Select a pre-loaded rural field visit transcript or type custom notes:
+              Type custom visit notes, or leave blank to use the transcribed audio:
             </p>
-
-            <select
-              onChange={(e) => setSampleTranscript(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.6rem',
-                background: 'var(--input-bg)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-sm)',
-                color: 'var(--input-text)',
-                fontSize: '0.8rem',
-                marginBottom: '0.75rem'
-              }}
-            >
-              <option value="">-- Choose Sample Field Visit Transcript --</option>
-              {sampleTranscriptsList.map((st, i) => (
-                <option key={i} value={st.value}>{st.label}</option>
-              ))}
-            </select>
 
             <textarea
               rows={5}
               placeholder="Live transcription will appear here, or type/paste visit notes..."
               value={sampleTranscript}
-              onChange={(e) => setSampleTranscript(e.target.value)}
+              onChange={(e) => {
+                setSampleTranscript(e.target.value);
+                setIsManuallyTyped(true);
+              }}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -567,32 +549,6 @@ export default function VoiceRecorder({
             )}
           </div>
 
-          {/* Transcription Output */}
-          {analysisResult.transcript && (
-            <div className="glass-card" style={{ padding: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', color: '#2dd4bf' }}>
-                <CheckCircle size={18} />
-                <h3 style={{ fontSize: '0.95rem', fontWeight: '700', margin: 0 }}>Whisper Transcription</h3>
-              </div>
-              <textarea
-                readOnly
-                rows={4}
-                value={analysisResult.transcript}
-                style={{
-                  width: '100%',
-                  padding: '0.85rem',
-                  background: 'var(--input-bg)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '10px',
-                  color: 'var(--text-main)',
-                  fontSize: '0.9rem',
-                  lineHeight: '1.5',
-                  resize: 'none',
-                  outline: 'none'
-                }}
-              />
-            </div>
-          )}
 
           {/* AI Visit Summary */}
           {analysisResult.summary && (

@@ -109,7 +109,7 @@ router.get('/:id/risk-timeline', async (req, res) => {
       .from('risk_timeline')
       .select('*')
       .eq('patient_id', patientId)
-      .order('date_logged', { ascending: true });
+      .order('date_logged', { ascending: false });
 
     if (error) {
       console.error('Error fetching risk timeline:', error.message);
@@ -119,6 +119,38 @@ router.get('/:id/risk-timeline', async (req, res) => {
     return res.json({ success: true, data: timeline });
   } catch (err) {
     console.error('Server error in GET /api/patients/:id/risk-timeline:', err.message);
+    return res.status(500).json({ error: `Server error: ${err.message}` });
+  }
+});
+
+/**
+ * GET /api/patients/:id/myths
+ * Retrieves detected myths for a specific patient
+ */
+router.get('/:id/myths', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Authorization header missing.' });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const userClient = createUserClient(token);
+    const patientId = req.params.id;
+
+    const { data: myths, error } = await userClient
+      .from('detected_myths')
+      .select('*')
+      .eq('patient_id', patientId);
+
+    if (error) {
+      console.error('Error fetching patient detected myths:', error.message);
+      return res.status(400).json({ error: `Failed to retrieve detected myths: ${error.message}` });
+    }
+
+    return res.json({ success: true, data: myths });
+  } catch (err) {
+    console.error('Server error in GET /api/patients/:id/myths:', err.message);
     return res.status(500).json({ error: `Server error: ${err.message}` });
   }
 });

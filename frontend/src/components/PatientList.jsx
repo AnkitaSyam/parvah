@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Plus, User, Calendar, MapPin, Phone, Heart, Activity, ChevronRight, X, AlertCircle } from 'lucide-react';
 
-export default function PatientList({ patients = [], isDemo = false, onAddPatient, onSelectPatient }) {
+export default function PatientList({ patients = [], isDemo = false, userCity, onAddPatient, onSelectPatient }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
 
   // Form State
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
-  const [gestationalWeeks, setGestationalWeeks] = useState(14);
-  const [village, setVillage] = useState('Rampur');
+  const [gestationalWeeks, setGestationalWeeks] = useState('');
+  const [locationOption, setLocationOption] = useState('');
+  const [customVillage, setCustomVillage] = useState('');
   const [contactPhone, setContactPhone] = useState('');
-  const [bloodGroup, setBloodGroup] = useState('B+');
+  const [bloodGroup, setBloodGroup] = useState('');
 
   // Submit & Error State
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Sync location defaults on modal open or when userCity changes
+  useEffect(() => {
+    if (showAddModal) {
+      if (userCity) {
+        setLocationOption(userCity);
+      } else {
+        setLocationOption('Other');
+      }
+      setCustomVillage('');
+    }
+  }, [showAddModal, userCity]);
 
   const displayList = isDemo ? samplePatients : patients;
 
@@ -28,6 +41,8 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
     e.preventDefault();
     if (!name || !age) return;
 
+    const finalVillage = locationOption === 'Other' ? customVillage : locationOption;
+
     setIsSubmitting(true);
     setErrorMsg('');
 
@@ -35,19 +50,24 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
       await onAddPatient({
         name,
         age: parseInt(age, 10),
-        gestational_weeks: parseInt(gestationalWeeks, 10),
-        village,
+        gestational_weeks: gestationalWeeks ? parseInt(gestationalWeeks, 10) : null,
+        village: finalVillage,
         contact_phone: contactPhone,
-        blood_group: bloodGroup
+        blood_group: bloodGroup || null
       });
 
       // Clear all fields to their true defaults on success
       setName('');
       setAge('');
-      setGestationalWeeks(14);
-      setVillage('Rampur');
+      setGestationalWeeks('');
+      setCustomVillage('');
+      if (userCity) {
+        setLocationOption(userCity);
+      } else {
+        setLocationOption('Other');
+      }
       setContactPhone('');
-      setBloodGroup('B+');
+      setBloodGroup('');
       setShowAddModal(false);
     } catch (err) {
       console.error('Patient creation error:', err);
@@ -131,7 +151,7 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
                   </div>
                   <div>
                     <h3 style={{ fontSize: '1.1rem', fontWeight: '700', lineHeight: 1.2 }}>{p.name}</h3>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Age: {p.age} years</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{p.age ? `Age: ${p.age} years` : 'Age not set'}</span>
                   </div>
                 </div>
 
@@ -143,15 +163,15 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <MapPin size={14} color="var(--color-secondary)" />
-                  <span>{p.village || 'Rampur'}</span>
+                  <span>{p.village || 'Location not set'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <Heart size={14} color="var(--color-primary)" />
-                  <span>Blood: {p.blood_group || 'B+'}</span>
+                  <span>Blood: {p.blood_group && p.blood_group !== 'Unknown' ? p.blood_group : 'Blood group not set'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', gridColumn: 'span 2' }}>
                   <Phone size={14} />
-                  <span>{p.contact_phone || '+91 98765 43210'}</span>
+                  <span>{p.contact_phone || 'Phone not set'}</span>
                 </div>
               </div>
 
@@ -225,7 +245,7 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Sangeeta Devi"
+                  placeholder="Enter full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
@@ -238,7 +258,7 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
                   <input
                     type="number"
                     required
-                    placeholder="24"
+                    placeholder="Enter age"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
                     style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
@@ -251,6 +271,7 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
                     type="number"
                     min="1"
                     max="42"
+                    placeholder="Enter gestational week"
                     value={gestationalWeeks}
                     onChange={(e) => setGestationalWeeks(e.target.value)}
                     style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
@@ -260,13 +281,15 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div>
-                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.25rem' }}>Village Name</label>
-                  <input
-                    type="text"
-                    value={village}
-                    onChange={(e) => setVillage(e.target.value)}
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.25rem' }}>Location</label>
+                  <select
+                    value={locationOption}
+                    onChange={(e) => setLocationOption(e.target.value)}
                     style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
-                  />
+                  >
+                    {userCity && <option value={userCity}>{userCity}</option>}
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 <div>
@@ -276,20 +299,38 @@ export default function PatientList({ patients = [], isDemo = false, onAddPatien
                     onChange={(e) => setBloodGroup(e.target.value)}
                     style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
                   >
+                    <option value="">-- Select Blood Group --</option>
                     <option value="A+">A+</option>
+                    <option value="A-">A-</option>
                     <option value="B+">B+</option>
-                    <option value="O+">O+</option>
+                    <option value="B-">B-</option>
                     <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
                     <option value="O-">O-</option>
                   </select>
                 </div>
               </div>
 
+              {locationOption === 'Other' && (
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.25rem' }}>Specify Custom Location *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter custom village/city"
+                    value={customVillage}
+                    onChange={(e) => setCustomVillage(e.target.value)}
+                    style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}
+                  />
+                </div>
+              )}
+
               <div>
                 <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.25rem' }}>Contact Phone (+91)</label>
                 <input
                   type="text"
-                  placeholder="+91 98765 43210"
+                  placeholder="Enter contact phone"
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   style={{ width: '100%', padding: '0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--input-text)' }}

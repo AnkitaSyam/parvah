@@ -67,7 +67,7 @@ export default function RiskTimelineView({ patient, timelineEntries = [], onTrig
             </div>
             <h2 style={{ fontSize: '1.6rem', fontWeight: '800' }}>{patientName}</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Age: {patient?.age || 24} • Village: {patient?.village || 'Rampur'} • Blood Group: {patient?.blood_group || 'B+'}
+              Age: {patient?.age ? `${patient.age} years` : 'Age not set'} • Location: {patient?.village || 'Location not set'} • Blood Group: {patient?.blood_group || 'Blood group not set'}
             </p>
           </div>
 

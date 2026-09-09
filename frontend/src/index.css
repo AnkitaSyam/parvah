@@ -1,0 +1,415 @@
+:root {
+  --font-family-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+
+  /* Warm maternal-health palette: cream, rose, plum and marigold */
+  --color-primary: #B33B6B;
+  --color-primary-hover: #8D294F;
+  --color-primary-light: rgba(179, 59, 107, 0.10);
+
+  --color-secondary: #D06B32;
+  --color-secondary-hover: #A94F20;
+  --color-secondary-light: rgba(208, 107, 50, 0.11);
+
+  --color-accent: #7B3156;
+  --color-accent-hover: #5E203F;
+  --color-danger: #DC2626;
+
+  /* Background & Cards */
+  --bg-main: #FFF5ED;
+  --bg-card: #FFFCF8;
+  --bg-card-glass: rgba(255, 252, 248, 0.92);
+  --bg-card-hover: #FCE7D9;
+  --input-bg: #FFF8F2;
+  --input-text: #4A1D35;
+
+  --border-color: rgba(123, 49, 86, 0.16);
+  --border-color-glow: rgba(179, 59, 107, 0.25);
+
+  /* Typography */
+  --text-main: #4A1D35;
+  --text-muted: #8A5A71;
+  --text-inverse: #ffffff;
+
+  /* Severity colors */
+  --severity-mild-bg: rgba(16, 185, 129, 0.1);
+  --severity-mild-text: #059669;
+  --severity-mild-border: rgba(16, 185, 129, 0.2);
+
+  --severity-moderate-bg: rgba(245, 158, 11, 0.1);
+  --severity-moderate-text: #d97706;
+  --severity-moderate-border: rgba(245, 158, 11, 0.2);
+
+  --severity-severe-bg: rgba(220, 38, 38, 0.1);
+  --severity-severe-text: #dc2626;
+  --severity-severe-border: rgba(220, 38, 38, 0.2);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --shadow-glow: 0 0 25px rgba(179, 59, 107, 0.16);
+  --shadow-card: 0 10px 25px -5px rgba(105, 43, 65, 0.10);
+
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-body);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(208, 107, 50, 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(179, 59, 107, 0.09) 0%, transparent 45%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.02em;
+}
+
+/* Layout Utilities */
+.app-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.glass-card {
+  background: var(--bg-card-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.glass-card:hover {
+  border-color: rgba(179, 59, 107, 0.28);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-family-body);
+  font-weight: 600;
+  font-size: 0.925rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), #D06B32);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-hover), #A94F20);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.5);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--color-secondary), #9C2464);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--color-secondary-hover), #801950);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-outline:hover {
+  background: var(--color-primary-light);
+  border-color: rgba(179, 59, 107, 0.35);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-mild {
+  background: var(--severity-mild-bg);
+  color: var(--severity-mild-text);
+  border: 1px solid var(--severity-mild-border);
+}
+
+.badge-moderate {
+  background: var(--severity-moderate-bg);
+  color: var(--severity-moderate-text);
+  border: 1px solid var(--severity-moderate-border);
+}
+
+.badge-severe {
+  background: var(--severity-severe-bg);
+  color: var(--severity-severe-text);
+  border: 1px solid var(--severity-severe-border);
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Audio Waveform Animation */
+.recording-pulse {
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 12px rgba(225, 29, 72, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+}
+
+.wave-bar {
+  width: 4px;
+  background: linear-gradient(to top, var(--color-primary), var(--color-accent));
+  border-radius: 4px;
+  animation: wave 1.2s ease-in-out infinite alternate;
+}
+
+.wave-bar:nth-child(2) { animation-delay: 0.2s; }
+.wave-bar:nth-child(3) { animation-delay: 0.4s; }
+.wave-bar:nth-child(4) { animation-delay: 0.1s; }
+.wave-bar:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes wave {
+  0% { height: 8px; }
+  100% { height: 32px; }
+}
+
+/* Timeline Components */
+.timeline-item {
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 0.45rem;
+  top: 1.2rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  border: 3px solid var(--bg-card);
+}
+
+.timeline-dot.severe {
+  background: var(--color-primary);
+  box-shadow: 0 0 10px rgba(225, 29, 72, 0.6);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D9A7B9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B76A89;
+}
+
+/* Custom Nav Pill styling matching reference screen */
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.nav-pill:hover {
+  color: var(--text-main);
+  background: var(--color-primary-light);
+}
+
+.nav-pill.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(179, 59, 107, 0.25);
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+/* Used by every loading state (Loader2 from lucide). */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+  transform-origin: center;
+}
+
+/* ── Accessibility ───────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+/* Inputs inherit the app font rather than the browser default. */
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 0;
+  border-color: var(--color-primary);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+.user-profile-text {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .user-profile-text {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-container {
+    padding: 0.85rem;
+  }
+
+  .nav-pill {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Hide the tab label on narrow screens, but NOT the alert-count badge —
+     it is a span too, and hiding it removed the one thing a worker needs to
+     see at a glance. */
+  .nav-pill > span:not(.nav-badge) {
+    display: none;
+  }
+
+  .logout-label,
+  .privacy-label {
+    display: none;
+  }
+}
+
+/* ── Motion preferences ──────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* A spinner with no motion reads as a frozen page, so keep it turning
+     slowly rather than stopping it entirely. */
+  .spin {
+    animation: spin 2.5s linear infinite !important;
+  }
+}
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+
+@media print {
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+  }
+}

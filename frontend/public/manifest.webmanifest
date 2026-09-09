@@ -1,0 +1,17 @@
+{
+  "name": "Parvah — Maternal & Child Health",
+  "short_name": "Parvah",
+  "description": "Voice-first maternal and child health support for ASHA workers. Works without a signal.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF5ED",
+  "theme_color": "#B33B6B",
+  "lang": "en-IN",
+  "categories": ["health", "medical"],
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

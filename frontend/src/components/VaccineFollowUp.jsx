@@ -275,7 +275,7 @@ export default function VaccineFollowUp({
                             <button
                               type="button"
                               className="btn btn-outline"
-                              onClick={() => onSelectPatient({ id: item.patient_id, ...(item.patients || {}) })}
+                              onClick={() => onSelectPatient({ ...(item.patients || {}), id: item.patient_id })}
                               title="Open this patient's full vaccination checklist"
                               style={{ padding: '0.3rem 0.65rem', fontSize: '0.76rem' }}
                             >
